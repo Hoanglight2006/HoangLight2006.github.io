@@ -230,7 +230,7 @@ function renderQuiz() {
                 const optionLabel = document.createElement('label');
                 optionLabel.className = 'option-label';
                 optionLabel.htmlFor = optionId;
-                
+
                 const optionInput = document.createElement('input');
                 optionInput.type = 'radio';
                 optionInput.name = `question_${index}`;
@@ -238,7 +238,6 @@ function renderQuiz() {
                 optionInput.value = key;
                 optionInput.style.display = 'none';
 
-                // **SỬA LỖI: Thêm logic tô sáng lựa chọn**
                 optionInput.onchange = () => {
                     userAnswers[index] = key;
                     document.querySelectorAll(`input[name="question_${index}"]`).forEach(radio => {
@@ -247,14 +246,25 @@ function renderQuiz() {
                     optionLabel.classList.add('selected');
                 };
 
-                let optionHTML = `<div class="option-content"><span>${optionLetters[optionIndex]}. ${value.text}</span>`;
-                if (value.image) {
-                    optionHTML += `<img src="${value.image}" class="quiz-image" alt="Hình ảnh đáp án">`;
-                }
-                optionHTML += `</div>`;
-                
+                // **SỬA LỖI**: Dùng appendChild thay vì innerHTML để không làm mất sự kiện onchange
                 optionLabel.appendChild(optionInput);
-                optionLabel.innerHTML += optionHTML; // Nối chuỗi thay vì gán đè
+                
+                const optionContent = document.createElement('div');
+                optionContent.className = 'option-content';
+
+                const textSpan = document.createElement('span');
+                textSpan.textContent = `${optionLetters[optionIndex]}. ${value.text}`;
+                optionContent.appendChild(textSpan);
+
+                if (value.image) {
+                    const img = document.createElement('img');
+                    img.src = value.image;
+                    img.alt = 'Hình ảnh đáp án';
+                    img.className = 'quiz-image';
+                    optionContent.appendChild(img);
+                }
+                
+                optionLabel.appendChild(optionContent);
                 optionsContainer.appendChild(optionLabel);
             });
             questionItem.appendChild(optionsContainer);
@@ -269,11 +279,10 @@ function renderQuiz() {
     });
 }
 
-// **SỬA LỖI: Hoàn thiện logic hiển thị kết quả**
 function submitQuiz() {
     const totalQuestions = flatQuestions.length;
     let correctCount = 0;
-    
+
     flatQuestions.forEach((q, index) => {
         if (userAnswers[index] && userAnswers[index] === q.answer) {
             correctCount++;
@@ -282,27 +291,25 @@ function submitQuiz() {
 
     const resultsContainer = document.getElementById("results-container");
     resultsContainer.innerHTML = `<h2>Kết quả: ${correctCount} / ${totalQuestions} câu đúng</h2>`;
-    
-    let lastContext = null;
+
+    let lastContextRendered = null;
     flatQuestions.forEach((q, index) => {
         const resultItem = document.createElement("div");
         const userAnswerKey = userAnswers[index];
         const isCorrect = userAnswerKey === q.answer;
-        
         resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
-        
+
         let resultHTML = '';
-        if (q.context && q.context !== lastContext) {
+        if (q.context && q.context !== lastContextRendered) {
             resultHTML += `<div class="question-context">${q.context}</div>`;
-            lastContext = q.context;
+            lastContextRendered = q.context;
         }
-        if(q.questionImage) {
+        if (q.questionImage) {
             resultHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`;
         }
         resultHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
 
-        // Hiển thị đáp án
-        let userAnswerText = 'Chưa trả lời';
+        let userAnswerText = '<i>Chưa trả lời</i>';
         if (q.type === 'multiple' && userAnswerKey) {
             const answerObj = q.options[userAnswerKey];
             userAnswerText = answerObj.text;
@@ -310,28 +317,34 @@ function submitQuiz() {
                 userAnswerText += `<br><img src="${answerObj.image}" class="quiz-image" style="max-width: 150px;">`;
             }
         } else if (userAnswerKey) {
-            userAnswerText = userAnswerKey; // For essay
+            userAnswerText = userAnswerKey;
         }
 
-        let correctAnswerText = '';
+        let correctAnswerHTML = '';
         if (!isCorrect) {
-            const correctObj = q.options[q.answer];
-            correctAnswerText = correctObj.text;
-            if (correctObj.image) {
-                correctAnswerText += `<br><img src="${correctObj.image}" class="quiz-image" style="max-width: 150px;">`;
+            // **SỬA LỖI**: Xử lý riêng biệt cho câu tự luận và trắc nghiệm
+            if (q.type === 'multiple') {
+                const correctObj = q.options[q.answer];
+                let correctAnswerText = correctObj.text;
+                if (correctObj.image) {
+                    correctAnswerText += `<br><img src="${correctObj.image}" class="quiz-image" style="max-width: 150px;">`;
+                }
+                correctAnswerHTML = `<p><strong>Đáp án đúng:</strong> ${correctAnswerText}</p>`;
+            } else { // Câu tự luận
+                correctAnswerHTML = `<p><strong>Đáp án đúng:</strong> ${q.answer}</p>`;
             }
         }
-        
+
         resultHTML += `
             <div class="result-answer">
                 <p><strong>Bạn trả lời:</strong> ${userAnswerText}</p>
-                ${!isCorrect ? `<p><strong>Đáp án đúng:</strong> ${correctAnswerText}</p>` : ''}
+                ${correctAnswerHTML}
             </div>
         `;
         resultItem.innerHTML = resultHTML;
         resultsContainer.appendChild(resultItem);
     });
-    
+
     document.getElementById("quiz-container").style.display = "none";
     document.getElementById("navigation-controls").style.display = "none";
     resultsContainer.style.display = "block";
