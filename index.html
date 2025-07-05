@@ -8,16 +8,20 @@
 </head>
 <body>
   <div id="creation-wrapper">
-    <h1>💡 Tạo đề trắc nghiệm</h1>
+    <h1>💡 Tạo đề trắc nghiệm (Theo nhóm)</h1>
     <div class="container">
       <div class="form-group">
+        <p class="field-description" style="font-weight: bold; font-size: 16px;">Nhóm câu hỏi hiện tại:</p>
+        <textarea id="context" rows="5" placeholder="Bối cảnh / Đoạn văn cho cả nhóm (nếu có)"></textarea>
+        
+        <hr class="light-hr">
+
+        <p class="field-description" style="font-weight: bold;">Thêm câu hỏi mới vào nhóm:</p>
         <label>
           <input type="checkbox" id="essayMode" onchange="toggleFields()"> Câu hỏi tự luận
         </label>
-        
-        <textarea id="context" rows="5" placeholder="Bối cảnh / Đoạn văn (nếu có)"></textarea>
+        <input type="text" id="question" placeholder="Nội dung câu hỏi" />
 
-        <input type="text" id="question" placeholder="Câu hỏi" />
         <div id="multipleChoiceFields">
           <p class="field-description">Nhập các lựa chọn. Bỏ trống nếu không dùng.</p>
           <input type="text" id="answerA" placeholder="Đáp án A" />
@@ -36,15 +40,22 @@
           <input type="text" id="essayAnswer" placeholder="Đáp án cho câu hỏi tự luận" />
         </div>
       </div>
+
+      <div id="group-status" class="status-box">Chưa có câu hỏi nào trong nhóm này.</div>
+      
       <div class="btn-group">
-        <button onclick="addQuestion()">➕ Thêm câu hỏi</button>
-        <button onclick="exportToJson()">💾 Xuất file JSON</button>
+        <button onclick="addQuestionToGroup()">➕ Thêm câu hỏi vào nhóm</button>
+        <button class="save-btn" onclick="saveGroup()">💾 Lưu nhóm & Tạo nhóm mới</button>
       </div>
     </div>
     <hr />
     <div class="container">
-      <h2>📝 Làm bài từ file đã lưu</h2>
-      <input type="file" id="jsonFileInput" accept=".json" />
+      <h2>📝 Quản lý & làm bài</h2>
+      
+      <div id="total-questions-status" class="status-box" style="margin-bottom: 20px;">Tổng số câu hỏi đã tạo: 0</div>
+
+      <button onclick="exportToJson()">💾 Xuất Toàn Bộ Đề Ra File JSON</button>
+      <input type="file" id="jsonFileInput" accept=".json" style="margin-top: 15px;" />
     </div>
   </div>
 
