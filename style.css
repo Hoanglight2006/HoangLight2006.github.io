@@ -27,13 +27,14 @@ h1, h2 {
   gap: 15px;
 }
 
-input[type="text"], select {
+input[type="text"], select, textarea {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-family: Arial, sans-serif; /* Đảm bảo font nhất quán */
 }
 
 .field-description {
@@ -94,6 +95,17 @@ hr {
 }
 .quiz-question-item:last-child {
   border-bottom: none;
+}
+
+/* THÊM MỚI: Định dạng cho phần bối cảnh */
+.question-context {
+  background-color: #f9f9f9;
+  border-left: 4px solid #0b5394;
+  padding: 15px;
+  margin-bottom: 15px;
+  white-space: pre-wrap; /* Giữ nguyên các định dạng xuống dòng */
+  font-style: italic;
+  color: #333;
 }
 
 .question-title {
