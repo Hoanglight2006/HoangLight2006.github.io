@@ -49,6 +49,7 @@ function addQuestion() {
 
     alert("Đã thêm câu hỏi thành công!");
     clearForm();
+    toggleFields();
 }
 
 function clearForm() {
@@ -71,3 +72,14 @@ function exportToJson() {
     a.click();
     URL.revokeObjectURL(url);
 }
+
+function toggleFields() {
+    const isEssay = document.getElementById("essayMode").checked;
+    document.getElementById("multipleChoiceFields").style.display = isEssay ? "none" : "block";
+    document.getElementById("essayFields").style.display = isEssay ? "block" : "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("essayMode").addEventListener("change", toggleFields);
+    toggleFields();
+});
