@@ -11,7 +11,7 @@ function themCauHoi() {
     const dung = parseInt(document.getElementById("correct").value);
 
     if (!cauHoi || dapan.some(d => !d)) {
-        alert("Điền đầy đủ câu hỏi và các đáp án!");
+        alert("Điền đầy đủ câu hỏi và các đáp án!!");
         return;
     }
 
