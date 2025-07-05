@@ -66,7 +66,6 @@
         function typeEffect() {
             const currentRole = roles[roleIndex];
             if (isDeleting) {
-                // Xóa chữ
                 roleElement.textContent = currentRole.substring(0, charIndex - 1);
                 charIndex--;
                 if (charIndex === 0) {
@@ -77,7 +76,6 @@
                     setTimeout(typeEffect, erasingSpeed);
                 }
             } else {
-                // Gõ chữ
                 roleElement.textContent = currentRole.substring(0, charIndex + 1);
                 charIndex++;
                 if (charIndex === currentRole.length) {
@@ -89,8 +87,16 @@
             }
         }
         
-        document.addEventListener("DOMContentLoaded", typeEffect);
+        // SCRIPT ĐẶT LẠI CHIỀU CAO CHO BODY
+        function setBodyMinHeight() {
+            document.body.style.minHeight = window.innerHeight + 'px';
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            typeEffect();
+            setBodyMinHeight();
+            window.addEventListener('resize', setBodyMinHeight); // Cập nhật chiều cao khi thay đổi kích thước cửa sổ
+        });
     </script>
 </body>
-
 </html>
