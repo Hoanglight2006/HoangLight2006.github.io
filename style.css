@@ -12,7 +12,7 @@ body {
   background-image: url('images/background-desktop.jpg');
   background-size: cover;
   background-position: center center;
-  background-attachment: fixed; /* Giữ lại hiệu ứng cố định */
+  background-attachment: fixed;
   background-color: #333;
   box-sizing: border-box;
 }
@@ -21,13 +21,12 @@ body {
 /* === STYLES FOR NEW LANDING PAGE (index.html) === */
 /* ============================================= */
 
-/* THAY ĐỔI: Dùng min-height để kéo dãn trang */
 .landing-page {
     max-width: 900px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
-    min-height: calc(100vh - 40px); /* 100vh trừ đi padding của body */
+    min-height: calc(100vh - 40px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -231,8 +230,8 @@ body {
 /* ======================================================= */
 .container { 
     max-width: 700px; 
-    margin: 0 auto 40px; 
-    background: rgba(0, 0, 0, 0.4);
+    margin: 40px auto; /* Thêm margin top cho container trên trang con */
+    background: rgba(0, 0, 0, 0.5); /* Nền tối trong suốt, đậm hơn chút */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     padding: 30px; 
