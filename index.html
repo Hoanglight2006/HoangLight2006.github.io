@@ -7,46 +7,51 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>💡 Tạo đề trắc nghiệm</h1>
-  <div class="container">
-    <div class="form-group">
-      <label>
-        <input type="checkbox" id="essayMode" onchange="toggleFields()"> Câu hỏi tự luận
-      </label>
-
-      <input type="text" id="question" placeholder="Câu hỏi" />
-
-      <div id="multipleChoiceFields">
-        <p style="text-align: left; margin-top: 10px; margin-bottom: 5px; font-style: italic;">Nhập các lựa chọn. Bỏ trống nếu không dùng.</p>
-        <input type="text" id="answerA" placeholder="Đáp án A" />
-        <input type="text" id="answerB" placeholder="Đáp án B" />
-        <input type="text" id="answerC" placeholder="Đáp án C" />
-        <input type="text" id="answerD" placeholder="Đáp án D" />
-        <label for="correctAnswer">Đáp án đúng:</label>
-        <select id="correctAnswer">
-          <option>A</option>
-          <option>B</option>
-          <option>C</option>
-          <option>D</option>
-        </select>
+  <div id="creation-wrapper">
+    <h1>💡 Tạo đề trắc nghiệm</h1>
+    <div class="container">
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="essayMode" onchange="toggleFields()"> Câu hỏi tự luận
+        </label>
+        <input type="text" id="question" placeholder="Câu hỏi" />
+        <div id="multipleChoiceFields">
+          <p class="field-description">Nhập các lựa chọn. Bỏ trống nếu không dùng.</p>
+          <input type="text" id="answerA" placeholder="Đáp án A" />
+          <input type="text" id="answerB" placeholder="Đáp án B" />
+          <input type="text" id="answerC" placeholder="Đáp án C" />
+          <input type="text" id="answerD" placeholder="Đáp án D" />
+          <label for="correctAnswer">Đáp án đúng:</label>
+          <select id="correctAnswer">
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+            <option>D</option>
+          </select>
+        </div>
+        <div id="essayFields" style="display: none;">
+          <input type="text" id="essayAnswer" placeholder="Đáp án cho câu hỏi tự luận" />
+        </div>
       </div>
-
-      <div id="essayFields" style="display: none;">
-        <input type="text" id="essayAnswer" placeholder="Đáp án cho câu hỏi tự luận" />
+      <div class="btn-group">
+        <button onclick="addQuestion()">➕ Thêm câu hỏi</button>
+        <button onclick="exportToJson()">💾 Xuất file JSON</button>
       </div>
     </div>
-
-    <div class="btn-group">
-      <button onclick="addQuestion()">➕ Thêm câu hỏi</button>
-      <button onclick="exportToJson()">💾 Xuất file JSON</button>
+    <hr />
+    <div class="container">
+      <h2>📝 Làm bài từ file đã lưu</h2>
+      <input type="file" id="jsonFileInput" accept=".json" />
     </div>
   </div>
 
-  <hr />
-
-  <div class="container">
-    <h2>📝 Làm bài từ file đã lưu</h2>
-    <input type="file" id="jsonFileInput" />
+  <div id="quiz-wrapper" style="display: none;">
+    <h1>📝 Bài làm trắc nghiệm</h1>
+    <div id="quiz-container" class="container"></div>
+    <div id="navigation-controls" class="btn-group">
+      <button id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
+    </div>
+    <div id="results-container" class="container" style="display: none;"></div>
   </div>
 
   <script src="script.js"></script>
