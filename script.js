@@ -2,6 +2,8 @@
 let questions = [];
 
 function addQuestion() {
+    // THÊM MỚI: Lấy giá trị từ ô bối cảnh
+    const context = document.getElementById("context").value.trim();
     const question = document.getElementById("question").value.trim();
     const isEssay = document.getElementById("essayMode").checked;
 
@@ -16,7 +18,8 @@ function addQuestion() {
             alert("Vui lòng nhập đáp án cho câu hỏi tự luận.");
             return;
         }
-        questions.push({ type: "essay", question, answer: essayAnswer });
+        // Cập nhật cấu trúc dữ liệu
+        questions.push({ type: "essay", context, question, answer: essayAnswer });
     } else {
         const options = {};
         const potentialOptions = {
@@ -42,8 +45,8 @@ function addQuestion() {
             alert(`Đáp án đúng "${answer}" không có nội dung. Vui lòng kiểm tra lại.`);
             return;
         }
-
-        questions.push({ type: "multiple", question, options, answer });
+        // Cập nhật cấu trúc dữ liệu
+        questions.push({ type: "multiple", context, question, options, answer });
     }
 
     alert("Đã thêm câu hỏi thành công!");
@@ -51,6 +54,8 @@ function addQuestion() {
 }
 
 function clearForm() {
+    // THÊM MỚI: Xóa nội dung ô bối cảnh
+    document.getElementById("context").value = "";
     document.getElementById("question").value = "";
     document.getElementById("answerA").value = "";
     document.getElementById("answerB").value = "";
@@ -94,7 +99,7 @@ function shuffleArray(array) {
 
 function startQuiz(questionsData) {
     quizQuestions = questionsData;
-    shuffleArray(quizQuestions); // Lần đầu vào cũng xáo trộn câu hỏi
+    shuffleArray(quizQuestions);
     document.getElementById("creation-wrapper").style.display = "none";
     document.getElementById("quiz-wrapper").style.display = "block";
     renderQuiz();
@@ -108,16 +113,27 @@ function renderQuiz() {
     quizQuestions.forEach((q, index) => {
         const questionItem = document.createElement("div");
         questionItem.className = "quiz-question-item";
-        // THAY ĐỔI: Định dạng "Câu 1:"
-        questionItem.innerHTML = `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+
+        // THÊM MỚI: Hiển thị bối cảnh nếu có
+        if (q.context) {
+            const contextEl = document.createElement("div");
+            contextEl.className = "question-context";
+            contextEl.textContent = q.context;
+            questionItem.appendChild(contextEl);
+        }
+
+        const questionTitle = document.createElement("p");
+        questionTitle.className = "question-title";
+        questionTitle.textContent = `Câu ${index + 1}: ${q.question}`;
+        questionItem.appendChild(questionTitle);
 
         if (q.type === "multiple") {
             const optionsContainer = document.createElement("div");
             optionsContainer.className = "options-container";
             
             const optionEntries = Object.entries(q.options);
-            shuffleArray(optionEntries); // Xáo trộn đáp án
-            const optionLetters = ['A', 'B', 'C', 'D']; // Các ký tự đáp án
+            shuffleArray(optionEntries);
+            const optionLetters = ['A', 'B', 'C', 'D'];
 
             optionEntries.forEach(([key, value], optionIndex) => {
                 const optionId = `q${index}_${key}`;
@@ -141,7 +157,6 @@ function renderQuiz() {
                 };
 
                 optionLabel.appendChild(optionInput);
-                // THAY ĐỔI: Thêm ký tự A, B, C vào trước đáp án
                 optionLabel.append(` ${optionLetters[optionIndex]}. ${value}`);
                 optionsContainer.appendChild(optionLabel);
             });
@@ -180,34 +195,37 @@ function submitQuiz() {
         const isCorrect = userAnswerKey === q.answer;
         
         resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
-        // THAY ĐỔI: Định dạng "Câu 1:" trong kết quả
-        resultItem.innerHTML = `
+        
+        let resultHTML = '';
+        // THÊM MỚI: Hiển thị bối cảnh trong kết quả
+        if (q.context) {
+            resultHTML += `<div class="question-context">${q.context}</div>`;
+        }
+        resultHTML += `
             <p class="question-title">Câu ${index + 1}: ${q.question}</p>
             <div class="result-answer">
                 <p><strong>Bạn trả lời:</strong> ${userAnswerText}</p>
                 ${!isCorrect ? `<p><strong>Đáp án đúng:</strong> ${q.options?.[q.answer] || q.answer}</p>` : ''}
             </div>
         `;
+        resultItem.innerHTML = resultHTML;
         resultsContainer.appendChild(resultItem);
     });
 
     resultsContainer.style.display = "block";
     document.getElementById("submit-btn").style.display = "none";
-    // THAY ĐỔI: Hiển thị các nút chức năng mới
     document.getElementById("post-quiz-controls").style.display = "flex";
 }
 
-// THÊM MỚI: Hàm làm lại bài thi
 function retakeQuiz() {
-    shuffleArray(quizQuestions); // Xáo trộn lại câu hỏi
+    shuffleArray(quizQuestions);
     document.getElementById("results-container").style.display = "none";
     document.getElementById("post-quiz-controls").style.display = "none";
     document.getElementById("submit-btn").style.display = "block";
     renderQuiz();
-    window.scrollTo(0, 0); // Cuộn lên đầu trang
+    window.scrollTo(0, 0);
 }
 
-// THÊM MỚI: Hàm quay về trang chủ
 function goHome() {
     location.reload();
 }
@@ -215,12 +233,10 @@ function goHome() {
 //============== PHẦN 3: SỰ KIỆN KHỞI TẠO ==============
 document.addEventListener("DOMContentLoaded", () => {
     toggleFields();
-
     const fileInput = document.getElementById("jsonFileInput");
     fileInput.addEventListener("change", (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
