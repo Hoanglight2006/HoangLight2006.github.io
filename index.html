@@ -10,19 +10,35 @@
   <h1>💡 Tạo đề trắc nghiệm</h1>
   <div class="container">
     <div class="form-group">
-      <input type="text" id="question" placeholder="Câu hỏi" />
-      <input type="text" id="answerA" placeholder="Đáp án A" />
-      <input type="text" id="answerB" placeholder="Đáp án B" />
-      <input type="text" id="answerC" placeholder="Đáp án C" />
-      <input type="text" id="answerD" placeholder="Đáp án D" />
-      <label for="correctAnswer">Đáp án đúng:</label>
-      <select id="correctAnswer">
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
-        <option>D</option>
-      </select>
-    </div>
+  <!-- Chuyển chế độ -->
+  <label>
+    <input type="checkbox" id="essayMode" onchange="toggleMode()"> Câu hỏi tự luận
+  </label>
+
+  <!-- Câu hỏi -->
+  <input type="text" id="question" placeholder="Câu hỏi" />
+
+  <!-- Trường trắc nghiệm -->
+  <div id="multipleChoiceFields">
+    <input type="text" id="answerA" placeholder="Đáp án A" />
+    <input type="text" id="answerB" placeholder="Đáp án B" />
+    <input type="text" id="answerC" placeholder="Đáp án C" />
+    <input type="text" id="answerD" placeholder="Đáp án D" />
+    <label for="correctAnswer">Đáp án đúng:</label>
+    <select id="correctAnswer">
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+      <option>D</option>
+    </select>
+  </div>
+
+  <!-- Trường tự luận -->
+  <div id="essayFields" style="display: none;">
+    <input type="text" id="essayAnswer" placeholder="Đáp án cho câu hỏi tự luận" />
+  </div>
+</div>
+
     <div class="btn-group">
       <button onclick="addQuestion()">➕ Thêm câu hỏi</button>
       <button onclick="exportToJson()">💾 Xuất file JSON</button>
