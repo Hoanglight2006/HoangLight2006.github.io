@@ -9,27 +9,28 @@ body {
   padding: 20px;
   color: #fff;
   text-align: center;
-  background-image: url('images/background-desktop.jpg');
+  background-image: url('images/image_e76f43.jpg');
   background-size: cover;
   background-position: center center;
-  background-attachment: scroll; /* Để nền cuộn cùng trang */
+  background-attachment: fixed; /* Giữ lại hiệu ứng cố định */
   background-color: #333;
-  box-sizing: border-box; /* Quan trọng: để padding không làm ảnh hưởng tính toán chiều cao */
+  box-sizing: border-box;
 }
 
 /* ============================================= */
 /* === STYLES FOR NEW LANDING PAGE (index.html) === */
 /* ============================================= */
 
+/* THAY ĐỔI: Dùng min-height để kéo dãn trang */
 .landing-page {
     max-width: 900px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
+    min-height: calc(100vh - 40px); /* 100vh trừ đi padding của body */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: calc(100vh - 40px); /* Kéo dãn container chính */
 }
 
 /* --- Phần giới thiệu --- */
