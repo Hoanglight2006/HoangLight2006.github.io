@@ -1,114 +1,62 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dương Đình Hoàng</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trắc nghiệm - Menu</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .menu-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+      gap: 30px;
+    }
+    .menu-card {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 250px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .menu-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    .menu-card h2 {
+      font-size: 24px;
+      color: #0b5394;
+      margin-top: 0;
+    }
+    .menu-card p {
+      font-size: 16px;
+      color: #555;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  </style>
 </head>
 <body>
-  <div id="creation-wrapper">
-    <h1>💡 Tạo đề trắc nghiệm</h1>
-    <div class="container">
-      <div class="mode-switcher">
-        <label for="groupModeToggle">
-          <input type="checkbox" id="groupModeToggle" onchange="toggleCreationMode()">
-          <strong>Bật chế độ tạo Nhóm câu hỏi</strong> (cho bài đọc hiểu)
-        </label>
+  <h1>Chào mừng đến với Công cụ Trắc nghiệm</h1>
+  <div class="menu-container">
+    <a href="creator.html">
+      <div class="menu-card">
+        <h2>💡 Tạo đề thi</h2>
+        <p>Soạn thảo câu hỏi, thêm hình ảnh và tạo ra các bài kiểm tra hoàn chỉnh.</p>
       </div>
-      <div class="form-group">
-        <textarea id="context" rows="5" placeholder="Bối cảnh / Đoạn văn (nếu có)"></textarea>
-        <hr class="light-hr">
-        <p class="field-description" style="font-weight: bold;">Nội dung câu hỏi:</p>
-        <div class="image-uploader">
-          <input type="file" id="questionImage" class="image-input" accept="image/*" onchange="handleImageUpload(event, 'question')">
-          <button type="button" class="image-btn" onclick="document.getElementById('questionImage').click()">🖼️ Thêm ảnh cho câu hỏi</button>
-          <div class="image-preview-container" id="question-preview-container"></div>
-        </div>
-        <input type="text" id="question" placeholder="Nhập nội dung câu hỏi" />
-        <label>
-          <input type="checkbox" id="essayMode" onchange="toggleFields()"> Câu hỏi tự luận
-        </label>
-        <div id="multipleChoiceFields">
-          <p class="field-description">Nhập các lựa chọn và thêm ảnh (nếu cần).</p>
-          <div class="option-group">
-            <input type="text" id="answerA" placeholder="Đáp án A" />
-            <div class="image-uploader">
-              <input type="file" id="answerAImage" class="image-input" accept="image/*" onchange="handleImageUpload(event, 'A')">
-              <button type="button" class="image-btn-small" onclick="document.getElementById('answerAImage').click()">🖼️</button>
-              <div class="image-preview-container" id="A-preview-container"></div>
-            </div>
-          </div>
-          <div class="option-group">
-            <input type="text" id="answerB" placeholder="Đáp án B" />
-            <div class="image-uploader">
-              <input type="file" id="answerBImage" class="image-input" accept="image/*" onchange="handleImageUpload(event, 'B')">
-              <button type="button" class="image-btn-small" onclick="document.getElementById('answerBImage').click()">🖼️</button>
-              <div class="image-preview-container" id="B-preview-container"></div>
-            </div>
-          </div>
-          <div class="option-group">
-            <input type="text" id="answerC" placeholder="Đáp án C" />
-            <div class="image-uploader">
-              <input type="file" id="answerCImage" class="image-input" accept="image/*" onchange="handleImageUpload(event, 'C')">
-              <button type="button" class="image-btn-small" onclick="document.getElementById('answerCImage').click()">🖼️</button>
-              <div class="image-preview-container" id="C-preview-container"></div>
-            </div>
-          </div>
-          <div class="option-group">
-            <input type="text" id="answerD" placeholder="Đáp án D" />
-            <div class="image-uploader">
-              <input type="file" id="answerDImage" class="image-input" accept="image/*" onchange="handleImageUpload(event, 'D')">
-              <button type="button" class="image-btn-small" onclick="document.getElementById('answerDImage').click()">🖼️</button>
-              <div class="image-preview-container" id="D-preview-container"></div>
-            </div>
-          </div>
-          <label for="correctAnswer">Đáp án đúng:</label>
-          <select id="correctAnswer"><option>A</option><option>B</option><option>C</option><option>D</option></select>
-        </div>
-        <div id="essayFields" style="display: none;">
-          <input type="text" id="essayAnswer" placeholder="Đáp án cho câu hỏi tự luận" />
-        </div>
+    </a>
+    <a href="quiz.html">
+      <div class="menu-card">
+        <h2>📝 Làm bài thi</h2>
+        <p>Tải lên tệp đề thi .json đã có để bắt đầu làm bài và kiểm tra kiến thức.</p>
       </div>
-      <div id="single-mode-controls">
-        <div class="btn-group"><button onclick="addSingleQuestion()">➕ Thêm câu hỏi đơn</button></div>
-      </div>
-      <div id="group-mode-controls" style="display: none;">
-        <div id="group-status" class="status-box">Chưa có câu hỏi nào trong nhóm này.</div>
-        <div class="btn-group">
-          <button onclick="addQuestionToGroup()">➕ Thêm câu hỏi vào nhóm</button>
-          <button class="save-btn" onclick="saveGroup()">💾 Lưu nhóm & Tạo nhóm mới</button>
-        </div>
-      </div>
-    </div>
+    </a>
   </div>
-
-  <hr class="section-divider">
-
-  <div id="quiz-taking-wrapper">
-    <h1>📝 Quản lý & Làm bài</h1>
-    <div class="container">
-      <div id="total-questions-status" class="status-box" style="margin-bottom: 20px;">Tổng số câu hỏi đã tạo: 0</div>
-      <div class="btn-group" style="flex-direction: column;">
-        <button class="export-btn" onclick="exportToJson()">💾 Xuất Toàn Bộ Đề Ra File JSON</button>
-        <button class="danger-btn" onclick="clearAllData()">🗑️ Xóa hết đề đã tạo</button>
-      </div>
-      <p class="field-description" style="margin-top:20px; text-align:center;">Hoặc tải file .json đã có để bắt đầu làm bài:</p>
-      <input type="file" id="jsonFileInput" accept=".json" />
-    </div>
-  </div>
-
-  <div id="quiz-display-wrapper" style="display: none;">
-    <h1>📝 Bài làm trắc nghiệm</h1>
-    <div id="quiz-container" class="container"></div>
-    <div id="navigation-controls" class="btn-group"><button id="submit-btn" onclick="submitQuiz()">Nộp bài</button></div>
-    <div id="results-container" class="container" style="display: none;"></div>
-    <div id="post-quiz-controls" class="btn-group" style="display: none;">
-      <button onclick="retakeQuiz()">Làm lại</button>
-      <button onclick="goHome()">Quay về trang chủ</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
 </body>
 </html>

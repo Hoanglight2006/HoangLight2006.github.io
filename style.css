@@ -7,7 +7,9 @@ body {
   text-align: center;
 }
 h1, h2 { color: #0b5394; margin-bottom: 20px; }
-.container { max-width: 700px; margin: 0 auto 40px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+.container { max-width: 700px; margin: 0 auto 40px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; position: relative; }
+a.back-link { display: block; text-align: left; margin-bottom: 20px; color: #0b5394; text-decoration: none; font-weight: bold; }
+a.back-link:hover { text-decoration: underline; }
 .form-group { display: flex; flex-direction: column; gap: 15px; }
 input[type="text"], select, textarea { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: Arial, sans-serif; }
 .field-description { text-align: left; margin: 0; font-style: italic; font-size: 14px; color: #666; }
@@ -19,7 +21,8 @@ button.save-btn { background-color: #ff9800; }
 button.save-btn:hover { background-color: #f57c00; }
 button.export-btn { background-color: #0277bd; }
 button.export-btn:hover { background-color: #01579b; }
-/* THÊM MỚI: Định dạng cho nút xóa */
+button.take-quiz-btn { background-color: #673ab7; }
+button.take-quiz-btn:hover { background-color: #512da8; }
 button.danger-btn { background-color: #d32f2f; }
 button.danger-btn:hover { background-color: #c62828; }
 #submit-btn { background-color: #0b5394; }
@@ -38,7 +41,7 @@ button.danger-btn:hover { background-color: #c62828; }
 .image-btn-small { padding: 5px 10px; font-size: 14px; line-height: 1; background-color: #777; flex-shrink: 0;}
 .option-group { display: flex; align-items: center; gap: 10px; }
 .option-group input[type="text"] { flex-grow: 1; }
-.image-preview-container { margin-top: 10px; }
+.image-preview-container { margin-top: 10px; text-align: left; }
 .image-preview { max-width: 150px; max-height: 100px; border-radius: 5px; border: 2px solid #ddd; display: block; }
 .remove-image-btn { background-color: #d32f2f; font-size: 12px; padding: 4px 8px; margin-top: 5px; }
 .remove-image-btn:hover { background-color: #c62828; }
