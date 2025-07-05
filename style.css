@@ -9,7 +9,7 @@ body {
   padding: 20px;
   color: #fff;
   text-align: center;
-  background-image: url('images/image_e76f43.jpg');
+  background-image: url('images/background.jpg');
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
@@ -312,15 +312,30 @@ button.danger-btn:hover { background-color: #c62828; }
 .result-item.incorrect .question-title { color: #ff7f7f; }
 .result-answer { padding-left: 20px; font-style: italic; }
 
-/* THÊM MỚI: TỐI ƯU CHO DI ĐỘNG */
+/* === TỐI ƯU CHO DI ĐỘNG (ĐÃ CẬP NHẬT) === */
 @media (max-width: 768px) {
   .hero-section h1 {
-    font-size: 2.5rem; /* Giảm cỡ chữ tên của bạn trên di động */
+    font-size: 2.2rem; /* Giảm thêm một chút */
   }
   .hero-section .job-title {
-    font-size: 1.4rem; /* Giảm cỡ chữ nghề nghiệp */
+    font-size: 1.4rem;
   }
   body {
-    background-attachment: scroll; /* Thay đổi hiệu ứng nền để mượt hơn trên di động */
+    background-attachment: scroll;
+  }
+}
+
+/* Thêm quy tắc cho màn hình rất nhỏ */
+@media (max-width: 480px) {
+  .hero-section h1 {
+    font-size: 1.9rem; /* Giảm mạnh hơn nữa */
+    gap: 8px;
+  }
+  .hero-section .job-title {
+    font-size: 1.2rem;
+  }
+  .social-links a, .contact-section a {
+    padding: 8px 20px;
+    font-size: 0.9rem;
   }
 }
