@@ -85,10 +85,6 @@ function toggleFields() {
 let quizQuestions = [];
 let userAnswers = {};
 
-/**
- * Hàm xáo trộn mảng (thuật toán Fisher-Yates)
- * @param {Array} array Mảng cần xáo trộn
- */
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -98,6 +94,7 @@ function shuffleArray(array) {
 
 function startQuiz(questionsData) {
     quizQuestions = questionsData;
+    shuffleArray(quizQuestions); // Lần đầu vào cũng xáo trộn câu hỏi
     document.getElementById("creation-wrapper").style.display = "none";
     document.getElementById("quiz-wrapper").style.display = "block";
     renderQuiz();
@@ -111,17 +108,18 @@ function renderQuiz() {
     quizQuestions.forEach((q, index) => {
         const questionItem = document.createElement("div");
         questionItem.className = "quiz-question-item";
-        questionItem.innerHTML = `<p class="question-title">${index + 1}. ${q.question}</p>`;
+        // THAY ĐỔI: Định dạng "Câu 1:"
+        questionItem.innerHTML = `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
 
         if (q.type === "multiple") {
             const optionsContainer = document.createElement("div");
             optionsContainer.className = "options-container";
             
-            // Chuyển options thành mảng, xáo trộn và render
             const optionEntries = Object.entries(q.options);
-            shuffleArray(optionEntries);
+            shuffleArray(optionEntries); // Xáo trộn đáp án
+            const optionLetters = ['A', 'B', 'C', 'D']; // Các ký tự đáp án
 
-            optionEntries.forEach(([key, value]) => {
+            optionEntries.forEach(([key, value], optionIndex) => {
                 const optionId = `q${index}_${key}`;
                 const optionLabel = document.createElement('label');
                 optionLabel.className = 'option-label';
@@ -131,12 +129,11 @@ function renderQuiz() {
                 optionInput.type = 'radio';
                 optionInput.name = `question_${index}`;
                 optionInput.id = optionId;
-                optionInput.value = key; // Value là key gốc (A, B, C, D)
-                optionInput.style.display = 'none'; // Ẩn radio button mặc định
+                optionInput.value = key;
+                optionInput.style.display = 'none';
 
                 optionInput.onchange = () => {
                     userAnswers[index] = key;
-                    // Cập nhật giao diện cho lựa chọn
                     document.querySelectorAll(`input[name="question_${index}"]`).forEach(radio => {
                         radio.parentElement.classList.remove('selected');
                     });
@@ -144,11 +141,12 @@ function renderQuiz() {
                 };
 
                 optionLabel.appendChild(optionInput);
-                optionLabel.append(` ${value}`); // Thêm nội dung đáp án
+                // THAY ĐỔI: Thêm ký tự A, B, C vào trước đáp án
+                optionLabel.append(` ${optionLetters[optionIndex]}. ${value}`);
                 optionsContainer.appendChild(optionLabel);
             });
             questionItem.appendChild(optionsContainer);
-        } else { // Câu hỏi tự luận
+        } else {
             const essayInput = document.createElement("textarea");
             essayInput.className = "essay-answer-input";
             essayInput.rows = 4;
@@ -177,14 +175,16 @@ function submitQuiz() {
     
     quizQuestions.forEach((q, index) => {
         const resultItem = document.createElement("div");
-        const userAnswer = userAnswers[index] || "Chưa trả lời";
-        const isCorrect = userAnswer === q.answer;
+        const userAnswerKey = userAnswers[index];
+        const userAnswerText = q.options?.[userAnswerKey] || userAnswerKey || "Chưa trả lời";
+        const isCorrect = userAnswerKey === q.answer;
         
         resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
+        // THAY ĐỔI: Định dạng "Câu 1:" trong kết quả
         resultItem.innerHTML = `
-            <p class="question-title">${index + 1}. ${q.question}</p>
+            <p class="question-title">Câu ${index + 1}: ${q.question}</p>
             <div class="result-answer">
-                <p><strong>Bạn trả lời:</strong> ${q.options?.[userAnswer] || userAnswer}</p>
+                <p><strong>Bạn trả lời:</strong> ${userAnswerText}</p>
                 ${!isCorrect ? `<p><strong>Đáp án đúng:</strong> ${q.options?.[q.answer] || q.answer}</p>` : ''}
             </div>
         `;
@@ -193,14 +193,29 @@ function submitQuiz() {
 
     resultsContainer.style.display = "block";
     document.getElementById("submit-btn").style.display = "none";
+    // THAY ĐỔI: Hiển thị các nút chức năng mới
+    document.getElementById("post-quiz-controls").style.display = "flex";
+}
+
+// THÊM MỚI: Hàm làm lại bài thi
+function retakeQuiz() {
+    shuffleArray(quizQuestions); // Xáo trộn lại câu hỏi
+    document.getElementById("results-container").style.display = "none";
+    document.getElementById("post-quiz-controls").style.display = "none";
+    document.getElementById("submit-btn").style.display = "block";
+    renderQuiz();
+    window.scrollTo(0, 0); // Cuộn lên đầu trang
+}
+
+// THÊM MỚI: Hàm quay về trang chủ
+function goHome() {
+    location.reload();
 }
 
 //============== PHẦN 3: SỰ KIỆN KHỞI TẠO ==============
 document.addEventListener("DOMContentLoaded", () => {
-    // Chạy lần đầu để đảm bảo giao diện đúng
     toggleFields();
 
-    // Lắng nghe sự kiện chọn file
     const fileInput = document.getElementById("jsonFileInput");
     fileInput.addEventListener("change", (event) => {
         const file = event.target.files[0];
