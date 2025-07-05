@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Trắc Nghiệm Tự Chế</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trắc nghiệm</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>💡 Tạo đề trắc nghiệm</h1>
-
-  <div class="tao-de">
-    <input id="q" placeholder="Câu hỏi"><br>
-    <input id="a" placeholder="Đáp án A"><br>
-    <input id="b" placeholder="Đáp án B"><br>
-    <input id="c" placeholder="Đáp án C"><br>
-    <input id="d" placeholder="Đáp án D"><br>
-    <label>Đáp án đúng:
-      <select id="correct">
-        <option value="0">A</option>
-        <option value="1">B</option>
-        <option value="2">C</option>
-        <option value="3">D</option>
+  <div class="container">
+    <div class="form-group">
+      <input type="text" id="question" placeholder="Câu hỏi" />
+      <input type="text" id="answerA" placeholder="Đáp án A" />
+      <input type="text" id="answerB" placeholder="Đáp án B" />
+      <input type="text" id="answerC" placeholder="Đáp án C" />
+      <input type="text" id="answerD" placeholder="Đáp án D" />
+      <label for="correctAnswer">Đáp án đúng:</label>
+      <select id="correctAnswer">
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+        <option>D</option>
       </select>
-    </label><br>
-    <button onclick="themCauHoi()">➕ Thêm câu hỏi</button>
-    <button onclick="xuatFile()">💾 Xuất file JSON</button>
+    </div>
+    <div class="btn-group">
+      <button onclick="addQuestion()">➕ Thêm câu hỏi</button>
+      <button onclick="exportToJson()">💾 Xuất file JSON</button>
+    </div>
   </div>
 
-  <hr>
+  <hr />
 
-  <h1>📝 Làm bài từ file đã lưu</h1>
-  <input type="file" onchange="taiDe(this)">
-  <div id="noidung"></div>
+  <div class="container">
+    <h2>📝 Làm bài từ file đã lưu</h2>
+    <input type="file" id="jsonFileInput" />
+  </div>
 
   <script src="script.js"></script>
 </body>
