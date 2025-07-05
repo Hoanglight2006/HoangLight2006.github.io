@@ -1,31 +1,25 @@
-//============== PHẦN 1: TẠO CÂU HỎI THEO NHÓM ==============
+//============== PHẦN 1: TẠO CÂU HỎI ==============
 let questionGroups = [];
 let currentGroup = { context: '', questions: [] };
 
-// Thêm một câu hỏi vào nhóm hiện tại
-function addQuestionToGroup() {
-    const context = document.getElementById("context").value.trim();
-    // Chỉ lấy context khi thêm câu hỏi đầu tiên, và khóa ô context lại
-    if (currentGroup.questions.length === 0) {
-        currentGroup.context = context;
-        document.getElementById("context").disabled = true;
-    }
-
+/**
+ * Lấy dữ liệu câu hỏi từ form, trả về object câu hỏi hoặc null nếu lỗi
+ */
+function getQuestionDataFromForm() {
     const questionText = document.getElementById("question").value.trim();
-    const isEssay = document.getElementById("essayMode").checked;
-
     if (questionText === "") {
         alert("Vui lòng nhập nội dung câu hỏi.");
-        return;
+        return null;
     }
 
+    const isEssay = document.getElementById("essayMode").checked;
     let newQuestion = { question: questionText };
-    
+
     if (isEssay) {
         const essayAnswer = document.getElementById("essayAnswer").value.trim();
         if (essayAnswer === "") {
             alert("Vui lòng nhập đáp án cho câu hỏi tự luận.");
-            return;
+            return null;
         }
         newQuestion.type = "essay";
         newQuestion.answer = essayAnswer;
@@ -37,49 +31,77 @@ function addQuestionToGroup() {
             C: document.getElementById("answerC").value.trim(),
             D: document.getElementById("answerD").value.trim()
         };
-
         for (const key in potentialOptions) {
             if (potentialOptions[key] !== "") { options[key] = potentialOptions[key]; }
         }
-        
         if (Object.keys(options).length < 2) {
             alert("Vui lòng điền ít nhất 2 đáp án cho câu hỏi trắc nghiệm.");
-            return;
+            return null;
         }
-
         const answer = document.getElementById("correctAnswer").value;
         if (!options[answer]) {
             alert(`Đáp án đúng "${answer}" không có nội dung. Vui lòng kiểm tra lại.`);
-            return;
+            return null;
         }
         newQuestion.type = "multiple";
         newQuestion.options = options;
         newQuestion.answer = answer;
     }
+    return newQuestion;
+}
+
+// Chế độ 1: Thêm câu hỏi đơn lẻ (bên dưới vẫn lưu như một nhóm có 1 câu hỏi)
+function addSingleQuestion() {
+    const context = document.getElementById("context").value.trim();
+    const newQuestion = getQuestionDataFromForm();
+    if (!newQuestion) return;
+
+    questionGroups.push({
+        context: context,
+        questions: [newQuestion]
+    });
+    
+    alert("Đã thêm câu hỏi đơn thành công!");
+    clearFullForm();
+    updateTotalQuestionsStatus();
+}
+
+// Chế độ 2: Thêm câu hỏi vào nhóm hiện tại
+function addQuestionToGroup() {
+    const context = document.getElementById("context").value.trim();
+    if (currentGroup.questions.length === 0) {
+        currentGroup.context = context;
+        document.getElementById("context").disabled = true;
+    }
+
+    const newQuestion = getQuestionDataFromForm();
+    if (!newQuestion) return;
 
     currentGroup.questions.push(newQuestion);
-    alert("Đã thêm câu hỏi vào nhóm thành công!");
+    alert("Đã thêm câu hỏi vào nhóm!");
     updateGroupStatus();
     clearQuestionForm();
 }
 
-// Lưu nhóm hiện tại và chuẩn bị cho nhóm mới
+// Chế độ 2: Lưu nhóm hiện tại
 function saveGroup() {
     if (currentGroup.questions.length === 0) {
         alert("Nhóm hiện tại chưa có câu hỏi nào. Vui lòng thêm câu hỏi trước khi lưu.");
         return;
     }
     questionGroups.push(currentGroup);
-    alert(`Đã lưu nhóm với ${currentGroup.questions.length} câu hỏi. Bạn có thể bắt đầu nhóm mới.`);
+    alert(`Đã lưu nhóm với ${currentGroup.questions.length} câu hỏi.`);
     
-    // Cập nhật tổng số câu hỏi
     updateTotalQuestionsStatus();
-
-    // Reset để tạo nhóm mới
     currentGroup = { context: '', questions: [] };
+    clearFullForm();
+    updateGroupStatus();
+}
+
+function clearFullForm() {
     document.getElementById("context").value = "";
     document.getElementById("context").disabled = false;
-    updateGroupStatus();
+    clearQuestionForm();
 }
 
 function clearQuestionForm() {
@@ -96,29 +118,18 @@ function clearQuestionForm() {
 function updateGroupStatus() {
     const statusBox = document.getElementById("group-status");
     const count = currentGroup.questions.length;
-    if (count === 0) {
-        statusBox.textContent = "Chưa có câu hỏi nào trong nhóm này.";
-    } else {
-        statusBox.textContent = `Nhóm hiện tại có ${count} câu hỏi.`;
-    }
+    statusBox.textContent = count === 0 ? "Chưa có câu hỏi nào trong nhóm này." : `Nhóm hiện tại có ${count} câu hỏi.`;
 }
 
-// THÊM MỚI: Hàm cập nhật tổng số câu hỏi
 function updateTotalQuestionsStatus() {
-    const totalQuestions = questionGroups.reduce((acc, group) => acc + group.questions.length, 0);
-    const statusBox = document.getElementById("total-questions-status");
-    statusBox.textContent = `Tổng số câu hỏi đã tạo: ${totalQuestions}`;
+    const total = questionGroups.reduce((acc, group) => acc + group.questions.length, 0);
+    document.getElementById("total-questions-status").textContent = `Tổng số câu hỏi đã tạo: ${total}`;
 }
-
 
 function exportToJson() {
-    // Tự động lưu nhóm đang làm dở trước khi xuất
-    if (currentGroup.questions.length > 0) {
-       saveGroup(); // Dùng lại hàm saveGroup để bao gồm cả việc cập nhật trạng thái
-    }
-
+    if (currentGroup.questions.length > 0) { saveGroup(); }
     if (questionGroups.length === 0) {
-        alert("Chưa có nhóm câu hỏi nào để xuất file.");
+        alert("Chưa có câu hỏi nào để xuất file.");
         return;
     }
     const dataStr = JSON.stringify(questionGroups, null, 2);
@@ -126,7 +137,7 @@ function exportToJson() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "de_theo_nhom.json";
+    a.download = "de_thi.json";
     a.click();
     URL.revokeObjectURL(url);
 }
@@ -137,8 +148,16 @@ function toggleFields() {
     document.getElementById("essayFields").style.display = isEssay ? "block" : "none";
 }
 
+function toggleCreationMode() {
+    const isGroupMode = document.getElementById("groupModeToggle").checked;
+    document.getElementById("single-mode-controls").style.display = isGroupMode ? "none" : "block";
+    document.getElementById("group-mode-controls").style.display = isGroupMode ? "block" : "none";
+    document.getElementById("context").placeholder = isGroupMode 
+        ? "Bối cảnh / Đoạn văn cho cả nhóm (nếu có)"
+        : "Bối cảnh / Đoạn văn cho câu hỏi này (nếu có)";
+}
+
 //============== PHẦN 2: LÀM BÀI TRẮC NGHIỆM ==============
-// ... (Không thay đổi phần này) ...
 let flatQuestions = [];
 let userAnswers = {};
 
@@ -159,7 +178,8 @@ function startQuiz(groupsData) {
     });
     
     document.getElementById("creation-wrapper").style.display = "none";
-    document.getElementById("quiz-wrapper").style.display = "block";
+    document.getElementById("quiz-taking-wrapper").style.display = "none";
+    document.getElementById("quiz-display-wrapper").style.display = "block";
     renderQuiz();
 }
 
@@ -251,8 +271,8 @@ function submitQuiz() {
         resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
         
         let resultHTML = '';
-        if (q.context) {
-            resultHTML += `<div class="question-context">${q.context}</div>`;
+        if (q.context && document.querySelector(`.result-item .question-context[data-context="${q.context}"]`) === null) {
+            resultHTML += `<div class="question-context" data-context="${q.context}">${q.context}</div>`;
         }
         resultHTML += `
             <p class="question-title">Câu ${index + 1}: ${q.question}</p>
@@ -265,8 +285,10 @@ function submitQuiz() {
         resultsContainer.appendChild(resultItem);
     });
 
+    document.getElementById("quiz-display-wrapper").style.display = "block";
+    document.getElementById("quiz-container").style.display = "none";
+    document.getElementById("navigation-controls").style.display = "none";
     resultsContainer.style.display = "block";
-    document.getElementById("submit-btn").style.display = "none";
     document.getElementById("post-quiz-controls").style.display = "flex";
 }
 
@@ -274,6 +296,8 @@ function retakeQuiz() {
     shuffleArray(flatQuestions);
     document.getElementById("results-container").style.display = "none";
     document.getElementById("post-quiz-controls").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
+    document.getElementById("navigation-controls").style.display = "flex";
     document.getElementById("submit-btn").style.display = "block";
     renderQuiz();
     window.scrollTo(0, 0);
@@ -286,6 +310,7 @@ function goHome() {
 //============== PHẦN 3: SỰ KIỆN KHỞI TẠO ==============
 document.addEventListener("DOMContentLoaded", () => {
     toggleFields();
+    toggleCreationMode();
     const fileInput = document.getElementById("jsonFileInput");
     fileInput.addEventListener("change", (event) => {
         const file = event.target.files[0];
