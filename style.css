@@ -30,10 +30,19 @@ h1, h2 {
 input[type="text"], select {
   width: 100%;
   padding: 10px;
-  margin-top: 10px;
+  margin-top: 5px;
   box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
+.field-description {
+  text-align: left;
+  margin: 0;
+  font-style: italic;
+  font-size: 14px;
+  color: #666;
+}
 
 label {
   text-align: left;
@@ -63,8 +72,72 @@ button:hover {
   background-color: #45a049;
 }
 
+#submit-btn {
+  background-color: #0b5394;
+}
+#submit-btn:hover {
+  background-color: #084a85;
+}
+
 hr {
   border: none;
   border-top: 1px solid #aaa;
   margin: 40px 0;
+}
+
+/* --- CSS CHO PHẦN LÀM BÀI --- */
+.quiz-question-item {
+  margin-bottom: 30px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+.quiz-question-item:last-child {
+  border-bottom: none;
+}
+
+.question-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-label {
+  display: block;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.option-label:hover {
+  background-color: #f0f8ff;
+}
+
+.option-label.selected {
+  background-color: #e0efff;
+  border-color: #0b5394;
+}
+
+/* --- CSS CHO PHẦN KẾT QUẢ --- */
+#results-container h2 {
+    color: #4caf50;
+}
+
+.result-item.correct .question-title {
+  color: #388e3c; /* Green */
+}
+.result-item.incorrect .question-title {
+  color: #d32f2f; /* Red */
+}
+.result-answer {
+  padding-left: 20px;
+  font-style: italic;
 }
