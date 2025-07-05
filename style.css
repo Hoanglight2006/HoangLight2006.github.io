@@ -9,26 +9,12 @@ body {
   padding: 20px;
   color: #fff;
   text-align: center;
-  /* Bỏ ảnh nền khỏi body */
-  background-color: #333; 
+  background-image: url('images/image_e76f43.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  background-color: #333;
 }
-
-/* THAY ĐỔI: Tạo lớp ảnh nền giả bằng pseudo-element */
-body::before {
-    content: '';
-    position: fixed; /* Cố định so với cửa sổ trình duyệt */
-    top: 0;
-    left: 0;
-    width: 100vw;  /* Rộng 100% */
-    height: 100vh; /* Cao 100% */
-    z-index: -1;   /* Đặt nó nằm sau tất cả các nội dung khác */
-
-    /* Các thuộc tính ảnh nền được chuyển vào đây */
-    background-image: url('images/background.jpg');
-    background-size: cover;
-    background-position: center center;
-}
-
 
 /* ============================================= */
 /* === STYLES FOR NEW LANDING PAGE (index.html) === */
@@ -39,7 +25,7 @@ body::before {
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
-    min-height: calc(100vh - 40px); /* Tính toán chiều cao để căn giữa */
+    min-height: calc(100vh - 40px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -268,8 +254,6 @@ body::before {
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 .container a.back-link { color: #87cefa; }
-
-/* Phần CSS còn lại của trang con giữ nguyên */
 .form-group { display: flex; flex-direction: column; gap: 15px; }
 input[type="text"], select, textarea { 
     width: 100%; 
@@ -327,3 +311,16 @@ button.danger-btn:hover { background-color: #c62828; }
 .result-item.correct .question-title { color: #90ee90; }
 .result-item.incorrect .question-title { color: #ff7f7f; }
 .result-answer { padding-left: 20px; font-style: italic; }
+
+/* THÊM MỚI: TỐI ƯU CHO DI ĐỘNG */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.5rem; /* Giảm cỡ chữ tên của bạn trên di động */
+  }
+  .hero-section .job-title {
+    font-size: 1.4rem; /* Giảm cỡ chữ nghề nghiệp */
+  }
+  body {
+    background-attachment: scroll; /* Thay đổi hiệu ứng nền để mượt hơn trên di động */
+  }
+}
