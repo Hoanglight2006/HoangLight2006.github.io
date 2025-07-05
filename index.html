@@ -1,49 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dương Đình Hoàng</title>
-    <style>
-        html, body {
-            height: 100%;
-            margin : 0;
-        }
-        body {
-            display : flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: 'Times New Roman', Times, serif;
-            background-color: #333333;
-            color :azure;
-            text-align: center;
-        }
-        main {
-            flex : 1;
-        }
-        footer {
-            font-size: 14px;
-            color: #777;
-            padding: 20px 0;
-        }
-        a {
-            color: white;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Trắc Nghiệm Tự Chế</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main>
-        <h1>Chào mừng bạn đến web đầu tiên của mình hẹ hẹ hẹ</h1>
-    <p>Đang học thôi nên chả có gì đâu</p>
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 by Hoàng Light. All rights reserved.</p>
-        <p>Liên hệ tôi: <a href="mailto:hoanglightvn@gmail.com">hoanglightvn@gmail.com</a></p>
-    </footer>
+  <h1>💡 Tạo đề trắc nghiệm</h1>
+
+  <div class="tao-de">
+    <input id="q" placeholder="Câu hỏi"><br>
+    <input id="a" placeholder="Đáp án A"><br>
+    <input id="b" placeholder="Đáp án B"><br>
+    <input id="c" placeholder="Đáp án C"><br>
+    <input id="d" placeholder="Đáp án D"><br>
+    <label>Đáp án đúng:
+      <select id="correct">
+        <option value="0">A</option>
+        <option value="1">B</option>
+        <option value="2">C</option>
+        <option value="3">D</option>
+      </select>
+    </label><br>
+    <button onclick="themCauHoi()">➕ Thêm câu hỏi</button>
+    <button onclick="xuatFile()">💾 Xuất file JSON</button>
+  </div>
+
+  <hr>
+
+  <h1>📝 Làm bài từ file đã lưu</h1>
+  <input type="file" onchange="taiDe(this)">
+  <div id="noidung"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
