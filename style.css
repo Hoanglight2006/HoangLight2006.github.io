@@ -12,13 +12,16 @@ h1, h2 { color: #0b5394; margin-bottom: 20px; }
 input[type="text"], select, textarea { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: Arial, sans-serif; }
 .field-description { text-align: left; margin: 0; font-style: italic; font-size: 14px; color: #666; }
 label { text-align: left; font-weight: bold; margin-top: 10px; }
-.btn-group { margin-top: 20px; display: flex; justify-content: center; gap: 20px; }
+.btn-group { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
 button { padding: 12px 20px; background-color: #4caf50; color: white; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
 button:hover { background-color: #45a049; }
 button.save-btn { background-color: #ff9800; }
 button.save-btn:hover { background-color: #f57c00; }
-button.export-btn { background-color: #0277bd; width: 100%;}
+button.export-btn { background-color: #0277bd; }
 button.export-btn:hover { background-color: #01579b; }
+/* THÊM MỚI: Định dạng cho nút xóa */
+button.danger-btn { background-color: #d32f2f; }
+button.danger-btn:hover { background-color: #c62828; }
 #submit-btn { background-color: #0b5394; }
 #submit-btn:hover { background-color: #084a85; }
 .light-hr { border: none; border-top: 1px solid #eee; margin: 15px 0; }
