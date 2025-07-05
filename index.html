@@ -1,62 +1,96 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trắc nghiệm - Menu</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .menu-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 80vh;
-      gap: 30px;
-    }
-    .menu-card {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 250px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .menu-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    }
-    .menu-card h2 {
-      font-size: 24px;
-      color: #0b5394;
-      margin-top: 0;
-    }
-    .menu-card p {
-      font-size: 16px;
-      color: #555;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dương Đình Hoàng</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Chào mừng đến với Công cụ Trắc nghiệm</h1>
-  <div class="menu-container">
-    <a href="creator.html">
-      <div class="menu-card">
-        <h2>💡 Tạo đề thi</h2>
-        <p>Soạn thảo câu hỏi, thêm hình ảnh và tạo ra các bài kiểm tra hoàn chỉnh.</p>
-      </div>
-    </a>
-    <a href="quiz.html">
-      <div class="menu-card">
-        <h2>📝 Làm bài thi</h2>
-        <p>Tải lên tệp đề thi .json đã có để bắt đầu làm bài và kiểm tra kiến thức.</p>
-      </div>
-    </a>
-  </div>
+    <div class="landing-page">
+        <header class="hero-section">
+            <p class="greeting">Hi, this is</p>
+            <h1>
+                Dương Đình Hoàng
+                <span class="verified-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M10,17l-5-5l1.41-1.41L10,14.17l7.59-7.59L19,8l-9,9z"></path></svg>
+                </span>
+            </h1>
+            <p class="job-title">and I'm a <span class="dynamic-text" id="job-role"></span></p>
+
+            <div class="social-links">
+                <a href="https://fb.com/hoanglight2" target="_blank">Facebook</a>
+                <a href="https://github.com/Hoanglight2006" target="_blank">GitHub</a>
+                <a href="https://zalo.me/0349769308" target="_blank">Zalo</a>
+            </div>
+        </header>
+
+        <main class="functions-grid">
+            <a href="creator.html" class="function-card">
+                <div class="card-content">
+                    <h2>💡 Tạo Đề Thi</h2>
+                    <p>Soạn thảo bài trắc nghiệm với câu hỏi, đáp án và hình ảnh.</p>
+                </div>
+                <span class="card-icon">→</span>
+            </a>
+            <a href="quiz.html" class="function-card">
+                <div class="card-content">
+                    <h2>📝 Làm Bài Thi</h2>
+                    <p>Tải lên tệp .json để bắt đầu làm bài và kiểm tra kiến thức.</p>
+                </div>
+                <span class="card-icon">→</span>
+            </a>
+        </main>
+
+        <footer class="contact-section">
+            <h2>Liên hệ tôi</h2>
+            <p>
+                <a href="mailto:hoanglightvn@gmail.com">hoanglightvn@gmail.com</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const roles = ["Developer.", "Designer."];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingSpeed = 150;
+        const erasingSpeed = 100;
+        const delayBetweenRoles = 2000;
+        const roleElement = document.getElementById("job-role");
+
+        function typeEffect() {
+            const currentRole = roles[roleIndex];
+            if (isDeleting) {
+                // Xóa chữ
+                roleElement.textContent = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    roleIndex = (roleIndex + 1) % roles.length;
+                    setTimeout(typeEffect, 500);
+                } else {
+                    setTimeout(typeEffect, erasingSpeed);
+                }
+            } else {
+                // Gõ chữ
+                roleElement.textContent = currentRole.substring(0, charIndex + 1);
+                charIndex++;
+                if (charIndex === currentRole.length) {
+                    isDeleting = true;
+                    setTimeout(typeEffect, delayBetweenRoles);
+                } else {
+                    setTimeout(typeEffect, typingSpeed);
+                }
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", typeEffect);
+    </script>
 </body>
+
 </html>

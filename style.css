@@ -1,19 +1,288 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
-  padding: 20px;
-  margin: 0;
-  color: #333;
-  text-align: center;
+/* --- CÀI ĐẶT CHUNG & FONT --- */
+html {
+    height: 100%;
 }
-h1, h2 { color: #0b5394; margin-bottom: 20px; }
-.container { max-width: 700px; margin: 0 auto 40px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; position: relative; }
-a.back-link { display: block; text-align: left; margin-bottom: 20px; color: #0b5394; text-decoration: none; font-weight: bold; }
-a.back-link:hover { text-decoration: underline; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  /* Bỏ ảnh nền khỏi body */
+  background-color: #333; 
+}
+
+/* THAY ĐỔI: Tạo lớp ảnh nền giả bằng pseudo-element */
+body::before {
+    content: '';
+    position: fixed; /* Cố định so với cửa sổ trình duyệt */
+    top: 0;
+    left: 0;
+    width: 100vw;  /* Rộng 100% */
+    height: 100vh; /* Cao 100% */
+    z-index: -1;   /* Đặt nó nằm sau tất cả các nội dung khác */
+
+    /* Các thuộc tính ảnh nền được chuyển vào đây */
+    background-image: url('images/background.jpg');
+    background-size: cover;
+    background-position: center center;
+}
+
+
+/* ============================================= */
+/* === STYLES FOR NEW LANDING PAGE (index.html) === */
+/* ============================================= */
+
+.landing-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    min-height: calc(100vh - 40px); /* Tính toán chiều cao để căn giữa */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- Phần giới thiệu --- */
+.hero-section {
+    padding: 20px;
+    margin-bottom: 40px;
+}
+
+.hero-section .greeting {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.hero-section h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 3.5rem;
+    font-weight: 400;
+    margin: 5px 0 20px 0;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.verified-badge {
+    color: #1DA1F2;
+    display: inline-flex;
+    align-items: center;
+}
+
+.hero-section .job-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin: 10px 0 40px 0;
+    color: #fff;
+    height: 1.5em; 
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.dynamic-text {
+    font-weight: 700;
+    background: linear-gradient(90deg, #33c3ff, #a4ff89, #ff337a, #33c3ff);
+    background-size: 400% 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    position: relative;
+    animation: animated-gradient-text 5s linear infinite;
+}
+
+.dynamic-text::after {
+    content: '|';
+    position: absolute;
+    right: -10px;
+    color: #fff;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes animated-gradient-text {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-links a {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 2px solid;
+    padding: 10px 25px;
+    border-radius: 50px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    animation: rainbow-border-chase 4s linear infinite;
+    background: transparent;
+    backdrop-filter: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.social-links a:hover {
+    transform: translateY(-3px);
+    animation-play-state: paused;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+@keyframes rainbow-border-chase {
+    0%   { color: #ff6493; border-color: #8a64ff; }
+    25%  { color: #ffdd64; border-color: #64ffb9; }
+    50%  { color: #8a64ff; border-color: #ff6493; }
+    75%  { color: #64ffb9; border-color: #ffdd64; }
+    100% { color: #ff6493; border-color: #8a64ff; }
+}
+
+
+/* --- Khu chức năng --- */
+.functions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 60px;
+}
+
+.function-card {
+    padding: 25px;
+    text-align: left;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    border-radius: 12px;
+    transition: transform 0.2s, background-color 0.3s;
+    border: 2px solid;
+    animation: rainbow-border-chase 4s linear infinite reverse;
+    background: transparent;
+    backdrop-filter: none;
+}
+
+.function-card:hover {
+    transform: translateY(-5px);
+    animation-play-state: paused;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: #fff !important;
+}
+
+.function-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.function-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #eee;
+    line-height: 1.5;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.card-icon {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.function-card:hover .card-icon {
+    opacity: 1;
+}
+
+/* --- Phần liên hệ --- */
+.contact-section {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.contact-section h2 {
+    font-size: 1.5rem;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    margin-bottom: 25px;
+}
+.contact-section p {
+    font-size: 1.1rem;
+}
+
+.contact-section a {
+    text-decoration: none;
+    font-weight: 700;
+    border: 2px solid;
+    padding: 10px 25px;
+    border-radius: 50px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    animation: rainbow-border-chase 4s linear infinite;
+    background: transparent;
+    backdrop-filter: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.contact-section a:hover {
+    transform: translateY(-3px);
+    animation-play-state: paused;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+
+/* ======================================================= */
+/* === STYLES FOR SUB-PAGES (creator.html, quiz.html) === */
+/* ======================================================= */
+.container { 
+    max-width: 700px; 
+    margin: 0 auto 40px; 
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 30px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    position: relative; 
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.container, .container h1, .container h2, .container p, .container label, .container .field-description {
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.container a.back-link { color: #87cefa; }
+
+/* Phần CSS còn lại của trang con giữ nguyên */
 .form-group { display: flex; flex-direction: column; gap: 15px; }
-input[type="text"], select, textarea { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: Arial, sans-serif; }
-.field-description { text-align: left; margin: 0; font-style: italic; font-size: 14px; color: #666; }
-label { text-align: left; font-weight: bold; margin-top: 10px; }
+input[type="text"], select, textarea { 
+    width: 100%; 
+    padding: 10px; 
+    margin-top: 5px; 
+    box-sizing: border-box; 
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    border-radius: 4px; 
+    font-family: 'Roboto', sans-serif; 
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+input[type="text"]::placeholder, textarea::placeholder { color: #ccc; }
 .btn-group { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
 button { padding: 12px 20px; background-color: #4caf50; color: white; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
 button:hover { background-color: #45a049; }
@@ -27,13 +296,11 @@ button.danger-btn { background-color: #d32f2f; }
 button.danger-btn:hover { background-color: #c62828; }
 #submit-btn { background-color: #0b5394; }
 #submit-btn:hover { background-color: #084a85; }
-.light-hr { border: none; border-top: 1px solid #eee; margin: 15px 0; }
+.light-hr { border: none; border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 15px 0; }
 .section-divider { border: none; border-top: 3px double #aaa; margin: 60px 0; }
-.status-box { background-color: #eef; border: 1px solid #cce; border-radius: 5px; padding: 10px; margin-top: 20px; text-align: center; font-style: italic; }
-.mode-switcher { background-color: #f1f1f1; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #ddd; }
+.status-box { background-color: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; padding: 10px; margin-top: 20px; text-align: center; font-style: italic; color: #eee; }
+.mode-switcher { background-color: rgba(0, 0, 0, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.1); }
 .mode-switcher label { cursor: pointer; font-size: 16px; }
-
-/* --- CSS CHO TÍNH NĂNG HÌNH ẢNH --- */
 .image-uploader { margin-top: 5px; margin-bottom: 5px; }
 .image-input { display: none; }
 .image-btn { background-color: #555; font-size: 14px; padding: 8px 12px; }
@@ -48,18 +315,15 @@ button.danger-btn:hover { background-color: #c62828; }
 .quiz-image { max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px; margin-bottom: 15px; display: block; }
 .option-content { display: flex; flex-direction: column; align-items: flex-start; }
 .option-content img { max-width: 200px; margin-top: 8px; }
-
-/* --- CSS CHO PHẦN LÀM BÀI --- */
-.quiz-question-item { margin-bottom: 30px; text-align: left; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+.quiz-question-item { margin-bottom: 30px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 20px; }
 .quiz-question-item:last-child { border-bottom: none; }
-.question-context { background-color: #f9f9f9; border-left: 4px solid #0b5394; padding: 15px; margin-bottom: 25px; white-space: pre-wrap; font-style: italic; color: #333; }
+.question-context { background-color: rgba(0, 0, 0, 0.2); border-left: 4px solid #87cefa; padding: 15px; margin-bottom: 25px; white-space: pre-wrap; font-style: italic; color: #eee; }
 .question-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
 .options-container { display: flex; flex-direction: column; gap: 10px; }
-.option-label { display: block; padding: 12px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
-.option-label:hover { background-color: #f0f8ff; }
-.option-label.selected { background-color: #e0efff; border-color: #0b5394; }
-
-#results-container h2 { color: #4caf50; }
-.result-item.correct .question-title { color: #388e3c; }
-.result-item.incorrect .question-title { color: #d32f2f; }
+.option-label { display: block; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 5px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; color: #fff; }
+.option-label:hover { background-color: rgba(255, 255, 255, 0.1); }
+.option-label.selected { background-color: rgba(135, 206, 250, 0.3); border-color: #87cefa; }
+#results-container h2 { color: #90ee90; }
+.result-item.correct .question-title { color: #90ee90; }
+.result-item.incorrect .question-title { color: #ff7f7f; }
 .result-answer { padding-left: 20px; font-style: italic; }
