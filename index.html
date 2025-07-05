@@ -8,19 +8,23 @@
 </head>
 <body>
   <div id="creation-wrapper">
-    <h1>💡 Tạo đề trắc nghiệm (Theo nhóm)</h1>
+    <h1>💡 Tạo đề trắc nghiệm</h1>
     <div class="container">
-      <div class="form-group">
-        <p class="field-description" style="font-weight: bold; font-size: 16px;">Nhóm câu hỏi hiện tại:</p>
-        <textarea id="context" rows="5" placeholder="Bối cảnh / Đoạn văn cho cả nhóm (nếu có)"></textarea>
-        
-        <hr class="light-hr">
+      <div class="mode-switcher">
+        <label for="groupModeToggle">
+          <input type="checkbox" id="groupModeToggle" onchange="toggleCreationMode()">
+          <strong>Bật chế độ tạo Nhóm câu hỏi</strong> (cho bài đọc hiểu)
+        </label>
+      </div>
 
-        <p class="field-description" style="font-weight: bold;">Thêm câu hỏi mới vào nhóm:</p>
+      <div class="form-group">
+        <textarea id="context" rows="5" placeholder="Bối cảnh / Đoạn văn (nếu có)"></textarea>
+        <hr class="light-hr">
+        <p class="field-description" style="font-weight: bold;">Nội dung câu hỏi:</p>
         <label>
           <input type="checkbox" id="essayMode" onchange="toggleFields()"> Câu hỏi tự luận
         </label>
-        <input type="text" id="question" placeholder="Nội dung câu hỏi" />
+        <input type="text" id="question" placeholder="Nhập nội dung câu hỏi" />
 
         <div id="multipleChoiceFields">
           <p class="field-description">Nhập các lựa chọn. Bỏ trống nếu không dùng.</p>
@@ -41,25 +45,34 @@
         </div>
       </div>
 
-      <div id="group-status" class="status-box">Chưa có câu hỏi nào trong nhóm này.</div>
-      
-      <div class="btn-group">
-        <button onclick="addQuestionToGroup()">➕ Thêm câu hỏi vào nhóm</button>
-        <button class="save-btn" onclick="saveGroup()">💾 Lưu nhóm & Tạo nhóm mới</button>
+      <div id="single-mode-controls">
+        <div class="btn-group">
+          <button onclick="addSingleQuestion()">➕ Thêm câu hỏi đơn</button>
+        </div>
       </div>
-    </div>
-    <hr />
-    <div class="container">
-      <h2>📝 Quản lý & làm bài</h2>
-      
-      <div id="total-questions-status" class="status-box" style="margin-bottom: 20px;">Tổng số câu hỏi đã tạo: 0</div>
-
-      <button onclick="exportToJson()">💾 Xuất Toàn Bộ Đề Ra File JSON</button>
-      <input type="file" id="jsonFileInput" accept=".json" style="margin-top: 15px;" />
+      <div id="group-mode-controls" style="display: none;">
+        <div id="group-status" class="status-box">Chưa có câu hỏi nào trong nhóm này.</div>
+        <div class="btn-group">
+          <button onclick="addQuestionToGroup()">➕ Thêm câu hỏi vào nhóm</button>
+          <button class="save-btn" onclick="saveGroup()">💾 Lưu nhóm & Tạo nhóm mới</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div id="quiz-wrapper" style="display: none;">
+  <hr class="section-divider">
+
+  <div id="quiz-taking-wrapper">
+    <h1>📝 Làm bài từ file</h1>
+    <div class="container">
+      <div id="total-questions-status" class="status-box" style="margin-bottom: 20px;">Tổng số câu hỏi đã tạo: 0</div>
+      <button onclick="exportToJson()">💾 Xuất Toàn Bộ Đề Ra File JSON</button>
+      <p class="field-description" style="margin-top:20px;">Hoặc tải file .json đã có để bắt đầu làm bài:</p>
+      <input type="file" id="jsonFileInput" accept=".json" />
+    </div>
+  </div>
+
+  <div id="quiz-display-wrapper" style="display: none;">
     <h1>📝 Bài làm trắc nghiệm</h1>
     <div id="quiz-container" class="container"></div>
     <div id="navigation-controls" class="btn-group">
@@ -68,7 +81,7 @@
     <div id="results-container" class="container" style="display: none;"></div>
     <div id="post-quiz-controls" class="btn-group" style="display: none;">
       <button onclick="retakeQuiz()">Làm lại (xáo trộn câu hỏi)</button>
-      <button onclick="goHome()">Trang chủ / Tải file mới</button>
+      <button onclick="goHome()">Quay về trang chủ</button>
     </div>
   </div>
 
