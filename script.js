@@ -215,7 +215,12 @@ function renderQuiz() {
         if (q.questionImage) {
             questionHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`;
         }
-        questionHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+        if (q.question) {
+            questionHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+        } else {
+            // Thêm một tiêu đề nếu không có text câu hỏi, để giữ khoảng cách
+             questionHTML += `<p class="question-title">Câu ${index + 1}:</p>`;
+        }
         questionItem.innerHTML = questionHTML;
 
         if (q.type === "multiple") {
@@ -245,15 +250,16 @@ function renderQuiz() {
                     });
                     optionLabel.classList.add('selected');
                 };
-
-                // **SỬA LỖI**: Dùng appendChild thay vì innerHTML để không làm mất sự kiện onchange
+                
                 optionLabel.appendChild(optionInput);
                 
                 const optionContent = document.createElement('div');
                 optionContent.className = 'option-content';
 
                 const textSpan = document.createElement('span');
-                textSpan.textContent = `${optionLetters[optionIndex]}. ${value.text}`;
+                // Chỉ hiển thị text nếu nó tồn tại
+                const optionText = value.text ? `${optionLetters[optionIndex]}. ${value.text}` : `${optionLetters[optionIndex]}.`;
+                textSpan.textContent = optionText;
                 optionContent.appendChild(textSpan);
 
                 if (value.image) {
@@ -312,25 +318,27 @@ function submitQuiz() {
         let userAnswerText = '<i>Chưa trả lời</i>';
         if (q.type === 'multiple' && userAnswerKey) {
             const answerObj = q.options[userAnswerKey];
-            userAnswerText = answerObj.text;
+            userAnswerText = answerObj.text || '';
             if (answerObj.image) {
                 userAnswerText += `<br><img src="${answerObj.image}" class="quiz-image" style="max-width: 150px;">`;
             }
         } else if (userAnswerKey) {
             userAnswerText = userAnswerKey;
         }
+        if (userAnswerText.trim() === '') userAnswerText = '<i>(Chỉ có hình ảnh)</i>';
+
 
         let correctAnswerHTML = '';
         if (!isCorrect) {
-            // **SỬA LỖI**: Xử lý riêng biệt cho câu tự luận và trắc nghiệm
             if (q.type === 'multiple') {
                 const correctObj = q.options[q.answer];
-                let correctAnswerText = correctObj.text;
+                let correctAnswerText = correctObj.text || '';
                 if (correctObj.image) {
                     correctAnswerText += `<br><img src="${correctObj.image}" class="quiz-image" style="max-width: 150px;">`;
                 }
+                if (correctAnswerText.trim() === '') correctAnswerText = '<i>(Chỉ có hình ảnh)</i>';
                 correctAnswerHTML = `<p><strong>Đáp án đúng:</strong> ${correctAnswerText}</p>`;
-            } else { // Câu tự luận
+            } else { 
                 correctAnswerHTML = `<p><strong>Đáp án đúng:</strong> ${q.answer}</p>`;
             }
         }
