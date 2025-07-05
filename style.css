@@ -34,7 +34,7 @@ input[type="text"], select, textarea {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-family: Arial, sans-serif; /* Đảm bảo font nhất quán */
+  font-family: Arial, sans-serif;
 }
 
 .field-description {
@@ -73,6 +73,13 @@ button:hover {
   background-color: #45a049;
 }
 
+button.save-btn {
+  background-color: #ff9800;
+}
+button.save-btn:hover {
+  background-color: #f57c00;
+}
+
 #submit-btn {
   background-color: #0b5394;
 }
@@ -85,6 +92,22 @@ hr {
   border-top: 1px solid #aaa;
   margin: 40px 0;
 }
+.light-hr {
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+/* THÊM MỚI: Định dạng cho hộp trạng thái */
+.status-box {
+  background-color: #eef;
+  border: 1px solid #cce;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 20px;
+  text-align: center;
+  font-style: italic;
+}
+
 
 /* --- CSS CHO PHẦN LÀM BÀI --- */
 .quiz-question-item {
@@ -97,13 +120,12 @@ hr {
   border-bottom: none;
 }
 
-/* THÊM MỚI: Định dạng cho phần bối cảnh */
 .question-context {
   background-color: #f9f9f9;
   border-left: 4px solid #0b5394;
   padding: 15px;
-  margin-bottom: 15px;
-  white-space: pre-wrap; /* Giữ nguyên các định dạng xuống dòng */
+  margin-bottom: 25px;
+  white-space: pre-wrap;
   font-style: italic;
   color: #333;
 }
@@ -144,10 +166,10 @@ hr {
 }
 
 .result-item.correct .question-title {
-  color: #388e3c; /* Green */
+  color: #388e3c;
 }
 .result-item.incorrect .question-title {
-  color: #d32f2f; /* Red */
+  color: #d32f2f;
 }
 .result-answer {
   padding-left: 20px;
