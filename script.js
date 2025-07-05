@@ -28,7 +28,7 @@ function removeImage(targetKey) {
     document.getElementById(`${targetKey}-preview-container`).innerHTML = '';
     const inputId = targetKey === 'question' ? 'questionImage' : `answer${targetKey}Image`;
     const input = document.getElementById(inputId);
-    if(input) input.value = '';
+    if (input) input.value = '';
 }
 // --- KẾT THÚC LOGIC XỬ LÝ ẢNH ---
 
@@ -40,9 +40,9 @@ function getQuestionDataFromForm() {
     }
 
     const isEssay = document.getElementById("essayMode").checked;
-    let newQuestion = { 
+    let newQuestion = {
         question: questionText,
-        questionImage: tempImages.question 
+        questionImage: tempImages.question
     };
 
     if (isEssay) {
@@ -57,7 +57,7 @@ function getQuestionDataFromForm() {
                 options[key] = { text, image };
             }
         });
-        
+
         if (Object.keys(options).length < 2) {
             alert("Vui lòng cung cấp ít nhất 2 đáp án.");
             return null;
@@ -164,7 +164,7 @@ function toggleCreationMode() {
     const isGroupMode = document.getElementById("groupModeToggle").checked;
     document.getElementById("single-mode-controls").style.display = isGroupMode ? "none" : "block";
     document.getElementById("group-mode-controls").style.display = isGroupMode ? "block" : "none";
-    document.getElementById("context").placeholder = isGroupMode 
+    document.getElementById("context").placeholder = isGroupMode
         ? "Bối cảnh / Đoạn văn cho cả nhóm (nếu có)"
         : "Bối cảnh / Đoạn văn cho câu hỏi này (nếu có)";
 }
@@ -188,7 +188,6 @@ function startQuiz(groupsData) {
             flatQuestions.push({ ...q, context: group.context });
         });
     });
-    
     document.getElementById("creation-wrapper").style.display = "none";
     document.getElementById("quiz-taking-wrapper").style.display = "none";
     document.getElementById("quiz-display-wrapper").style.display = "block";
@@ -212,11 +211,12 @@ function renderQuiz() {
 
         const questionItem = document.createElement("div");
         questionItem.className = "quiz-question-item";
-        
+        let questionHTML = '';
         if (q.questionImage) {
-            questionItem.innerHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`;
+            questionHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`;
         }
-        questionItem.innerHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+        questionHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+        questionItem.innerHTML = questionHTML;
 
         if (q.type === "multiple") {
             const optionsContainer = document.createElement("div");
@@ -237,21 +237,31 @@ function renderQuiz() {
                 optionInput.id = optionId;
                 optionInput.value = key;
                 optionInput.style.display = 'none';
-                optionInput.onchange = () => { userAnswers[index] = key; /* ... */ };
+
+                // **SỬA LỖI: Thêm logic tô sáng lựa chọn**
+                optionInput.onchange = () => {
+                    userAnswers[index] = key;
+                    document.querySelectorAll(`input[name="question_${index}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    optionLabel.classList.add('selected');
+                };
 
                 let optionHTML = `<div class="option-content"><span>${optionLetters[optionIndex]}. ${value.text}</span>`;
-                if(value.image) {
-                    optionHTML += `<img src="${value.image}" alt="Hình ảnh đáp án">`;
+                if (value.image) {
+                    optionHTML += `<img src="${value.image}" class="quiz-image" alt="Hình ảnh đáp án">`;
                 }
                 optionHTML += `</div>`;
                 
                 optionLabel.appendChild(optionInput);
-                optionLabel.innerHTML += optionHTML;
+                optionLabel.innerHTML += optionHTML; // Nối chuỗi thay vì gán đè
                 optionsContainer.appendChild(optionLabel);
             });
             questionItem.appendChild(optionsContainer);
         } else {
             const essayInput = document.createElement("textarea");
+            essayInput.rows = 4;
+            essayInput.placeholder = "Nhập câu trả lời của bạn...";
             essayInput.oninput = () => { userAnswers[index] = essayInput.value.trim(); };
             questionItem.appendChild(essayInput);
         }
@@ -259,16 +269,81 @@ function renderQuiz() {
     });
 }
 
+// **SỬA LỖI: Hoàn thiện logic hiển thị kết quả**
 function submitQuiz() {
-    // Logic submitQuiz cần được cập nhật để hiển thị ảnh trong kết quả
-    // Do giới hạn độ dài, phần này sẽ được giữ ngắn gọn
-    alert("Nộp bài thành công! Logic hiển thị kết quả chi tiết có thể được thêm vào đây.");
-    goHome();
+    const totalQuestions = flatQuestions.length;
+    let correctCount = 0;
+    
+    flatQuestions.forEach((q, index) => {
+        if (userAnswers[index] && userAnswers[index] === q.answer) {
+            correctCount++;
+        }
+    });
+
+    const resultsContainer = document.getElementById("results-container");
+    resultsContainer.innerHTML = `<h2>Kết quả: ${correctCount} / ${totalQuestions} câu đúng</h2>`;
+    
+    let lastContext = null;
+    flatQuestions.forEach((q, index) => {
+        const resultItem = document.createElement("div");
+        const userAnswerKey = userAnswers[index];
+        const isCorrect = userAnswerKey === q.answer;
+        
+        resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
+        
+        let resultHTML = '';
+        if (q.context && q.context !== lastContext) {
+            resultHTML += `<div class="question-context">${q.context}</div>`;
+            lastContext = q.context;
+        }
+        if(q.questionImage) {
+            resultHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`;
+        }
+        resultHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+
+        // Hiển thị đáp án
+        let userAnswerText = 'Chưa trả lời';
+        if (q.type === 'multiple' && userAnswerKey) {
+            const answerObj = q.options[userAnswerKey];
+            userAnswerText = answerObj.text;
+            if (answerObj.image) {
+                userAnswerText += `<br><img src="${answerObj.image}" class="quiz-image" style="max-width: 150px;">`;
+            }
+        } else if (userAnswerKey) {
+            userAnswerText = userAnswerKey; // For essay
+        }
+
+        let correctAnswerText = '';
+        if (!isCorrect) {
+            const correctObj = q.options[q.answer];
+            correctAnswerText = correctObj.text;
+            if (correctObj.image) {
+                correctAnswerText += `<br><img src="${correctObj.image}" class="quiz-image" style="max-width: 150px;">`;
+            }
+        }
+        
+        resultHTML += `
+            <div class="result-answer">
+                <p><strong>Bạn trả lời:</strong> ${userAnswerText}</p>
+                ${!isCorrect ? `<p><strong>Đáp án đúng:</strong> ${correctAnswerText}</p>` : ''}
+            </div>
+        `;
+        resultItem.innerHTML = resultHTML;
+        resultsContainer.appendChild(resultItem);
+    });
+    
+    document.getElementById("quiz-container").style.display = "none";
+    document.getElementById("navigation-controls").style.display = "none";
+    resultsContainer.style.display = "block";
+    document.getElementById("post-quiz-controls").style.display = "flex";
 }
 
 function retakeQuiz() {
     shuffleArray(flatQuestions);
-    // ...
+    document.getElementById("results-container").style.display = "none";
+    document.getElementById("post-quiz-controls").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
+    document.getElementById("navigation-controls").style.display = "flex";
     renderQuiz();
     window.scrollTo(0, 0);
 }
