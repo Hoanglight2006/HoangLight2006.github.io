@@ -6,176 +6,54 @@ body {
   color: #333;
   text-align: center;
 }
+h1, h2 { color: #0b5394; margin-bottom: 20px; }
+.container { max-width: 700px; margin: 0 auto 40px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+.form-group { display: flex; flex-direction: column; gap: 15px; }
+input[type="text"], select, textarea { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: Arial, sans-serif; }
+.field-description { text-align: left; margin: 0; font-style: italic; font-size: 14px; color: #666; }
+label { text-align: left; font-weight: bold; margin-top: 10px; }
+.btn-group { margin-top: 20px; display: flex; justify-content: center; gap: 20px; }
+button { padding: 12px 20px; background-color: #4caf50; color: white; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+button:hover { background-color: #45a049; }
+button.save-btn { background-color: #ff9800; }
+button.save-btn:hover { background-color: #f57c00; }
+button.export-btn { background-color: #0277bd; width: 100%;}
+button.export-btn:hover { background-color: #01579b; }
+#submit-btn { background-color: #0b5394; }
+#submit-btn:hover { background-color: #084a85; }
+.light-hr { border: none; border-top: 1px solid #eee; margin: 15px 0; }
+.section-divider { border: none; border-top: 3px double #aaa; margin: 60px 0; }
+.status-box { background-color: #eef; border: 1px solid #cce; border-radius: 5px; padding: 10px; margin-top: 20px; text-align: center; font-style: italic; }
+.mode-switcher { background-color: #f1f1f1; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #ddd; }
+.mode-switcher label { cursor: pointer; font-size: 16px; }
 
-h1, h2 {
-  color: #0b5394;
-  margin-bottom: 20px;
-}
-
-.container {
-  max-width: 700px;
-  margin: 0 auto 40px;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-input[type="text"], select, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: Arial, sans-serif;
-}
-
-.field-description {
-  text-align: left;
-  margin: 0;
-  font-style: italic;
-  font-size: 14px;
-  color: #666;
-}
-
-label {
-  text-align: left;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-.btn-group {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-button {
-  padding: 12px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-button.save-btn {
-  background-color: #ff9800;
-}
-button.save-btn:hover {
-  background-color: #f57c00;
-}
-
-#submit-btn {
-  background-color: #0b5394;
-}
-#submit-btn:hover {
-  background-color: #084a85;
-}
-
-.light-hr {
-  border: none;
-  border-top: 1px solid #eee;
-  margin: 15px 0;
-}
-.section-divider {
-  border: none;
-  border-top: 3px double #aaa;
-  margin: 60px 0;
-}
-
-.status-box {
-  background-color: #eef;
-  border: 1px solid #cce;
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 20px;
-  text-align: center;
-  font-style: italic;
-}
-
-/* THÊM MỚI: Định dạng cho công tắc chuyển chế độ */
-.mode-switcher {
-  background-color: #f1f1f1;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 25px;
-  border: 1px solid #ddd;
-}
-.mode-switcher label {
-  cursor: pointer;
-  font-size: 16px;
-}
+/* --- CSS CHO TÍNH NĂNG HÌNH ẢNH --- */
+.image-uploader { margin-top: 5px; margin-bottom: 5px; }
+.image-input { display: none; }
+.image-btn { background-color: #555; font-size: 14px; padding: 8px 12px; }
+.image-btn:hover { background-color: #333; }
+.image-btn-small { padding: 5px 10px; font-size: 14px; line-height: 1; background-color: #777; flex-shrink: 0;}
+.option-group { display: flex; align-items: center; gap: 10px; }
+.option-group input[type="text"] { flex-grow: 1; }
+.image-preview-container { margin-top: 10px; }
+.image-preview { max-width: 150px; max-height: 100px; border-radius: 5px; border: 2px solid #ddd; display: block; }
+.remove-image-btn { background-color: #d32f2f; font-size: 12px; padding: 4px 8px; margin-top: 5px; }
+.remove-image-btn:hover { background-color: #c62828; }
+.quiz-image { max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px; margin-bottom: 15px; display: block; }
+.option-content { display: flex; flex-direction: column; align-items: flex-start; }
+.option-content img { max-width: 200px; margin-top: 8px; }
 
 /* --- CSS CHO PHẦN LÀM BÀI --- */
-.quiz-question-item {
-  margin-bottom: 30px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 20px;
-}
-.quiz-question-item:last-child {
-  border-bottom: none;
-}
+.quiz-question-item { margin-bottom: 30px; text-align: left; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+.quiz-question-item:last-child { border-bottom: none; }
+.question-context { background-color: #f9f9f9; border-left: 4px solid #0b5394; padding: 15px; margin-bottom: 25px; white-space: pre-wrap; font-style: italic; color: #333; }
+.question-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+.options-container { display: flex; flex-direction: column; gap: 10px; }
+.option-label { display: block; padding: 12px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+.option-label:hover { background-color: #f0f8ff; }
+.option-label.selected { background-color: #e0efff; border-color: #0b5394; }
 
-.question-context {
-  background-color: #f9f9f9;
-  border-left: 4px solid #0b5394;
-  padding: 15px;
-  margin-bottom: 25px;
-  white-space: pre-wrap;
-  font-style: italic;
-  color: #333;
-}
-
-.question-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.options-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.option-label {
-  display: block;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
-}
-
-.option-label:hover {
-  background-color: #f0f8ff;
-}
-
-.option-label.selected {
-  background-color: #e0efff;
-  border-color: #0b5394;
-}
-
-#results-container h2 {
-    color: #4caf50;
-}
-
+#results-container h2 { color: #4caf50; }
 .result-item.correct .question-title { color: #388e3c; }
 .result-item.incorrect .question-title { color: #d32f2f; }
 .result-answer { padding-left: 20px; font-style: italic; }
