@@ -9,11 +9,12 @@ body {
   padding: 20px;
   color: #fff;
   text-align: center;
-  background-image: url('images/background.jpg');
+  
+  /* THAY ĐỔI: Đặt ảnh nền cho máy tính làm mặc định */
+  background-image: url('images/background-desktop.jpg'); 
   background-size: cover;
   background-position: center center;
-  /* THAY ĐỔI: Bỏ hiệu ứng nền cố định để khắc phục lỗi bị che */
-  background-attachment: scroll; /* hoặc có thể xóa dòng này vì scroll là mặc định */
+  background-attachment: fixed;
   background-color: #333;
 }
 
@@ -23,10 +24,13 @@ body {
 
 .landing-page {
     max-width: 900px;
-    margin: 20px auto;
+    margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
-    /* Bỏ min-height để nội dung tự co giãn */
+    min-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* --- Phần giới thiệu --- */
@@ -303,16 +307,19 @@ button.danger-btn:hover { background-color: #c62828; }
 
 /* === TỐI ƯU CHO DI ĐỘNG (ĐÃ CẬP NHẬT) === */
 @media (max-width: 768px) {
+  body {
+    /* THAY ĐỔI: Dùng ảnh nền cho di động và cho phép cuộn */
+    background-image: url('images/background-mobile.jpg');
+    background-attachment: scroll; 
+  }
   .hero-section h1 {
     font-size: 2.2rem;
   }
   .hero-section .job-title {
     font-size: 1.4rem;
   }
-  body {
-    background-attachment: scroll;
-  }
 }
+
 @media (max-width: 480px) {
   .hero-section h1 {
     font-size: 1.9rem;
