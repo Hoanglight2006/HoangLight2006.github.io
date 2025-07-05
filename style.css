@@ -7,14 +7,14 @@ body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 20px;
-  color: #fff; /* Đổi màu chữ mặc định thành trắng */
+  color: #fff;
   text-align: center;
   background-image: url('images/background.jpg');
   background-size: cover;
   background-position: center center;
-  background-attachment: fixed;
-  background-color: #333; /* Màu nền dự phòng nếu ảnh lỗi */
-  min-height: 100vh;
+  /* THAY ĐỔI: Bỏ hiệu ứng nền cố định để khắc phục lỗi bị che */
+  background-attachment: scroll; /* hoặc có thể xóa dòng này vì scroll là mặc định */
+  background-color: #333;
 }
 
 /* ============================================= */
@@ -23,13 +23,10 @@ body {
 
 .landing-page {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
     box-sizing: border-box;
-    min-height: calc(100vh - 40px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    /* Bỏ min-height để nội dung tự co giãn */
 }
 
 /* --- Phần giới thiệu --- */
@@ -41,6 +38,7 @@ body {
 .hero-section .greeting {
     font-size: 1.2rem;
     font-weight: 700;
+    color: #fff;
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
@@ -49,6 +47,7 @@ body {
     font-size: 3.5rem;
     font-weight: 400;
     margin: 5px 0 20px 0;
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,6 +65,7 @@ body {
     font-size: 1.7rem;
     font-weight: 700;
     margin: 10px 0 40px 0;
+    color: #fff;
     height: 1.5em; 
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
@@ -106,7 +106,6 @@ body {
     gap: 15px;
 }
 
-/* CẬP NHẬT: Nền trong suốt và có bóng đổ cho chữ */
 .social-links a {
     text-decoration: none;
     font-weight: 700;
@@ -145,7 +144,6 @@ body {
     margin-bottom: 60px;
 }
 
-/* CẬP NHẬT: Nền trong suốt cho thẻ chức năng */
 .function-card {
     padding: 25px;
     text-align: left;
@@ -153,6 +151,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: #fff;
     border-radius: 12px;
     transition: transform 0.2s, background-color 0.3s;
     border: 2px solid;
@@ -168,8 +167,8 @@ body {
 }
 
 .function-card h2, .function-card p, .function-card .card-icon {
-    color: #fff; /* Chữ trắng */
-    text-shadow: 0 1px 3px rgba(0,0,0,0.6); /* Thêm bóng đổ cho dễ đọc */
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 .function-card p { color: #eee; }
 
@@ -204,7 +203,6 @@ body {
 }
 .contact-section p { font-size: 1.1rem; }
 
-/* CẬP NHẬT: Nền trong suốt cho email */
 .contact-section a {
     text-decoration: none;
     font-weight: 700;
@@ -227,7 +225,6 @@ body {
 /* ======================================================= */
 /* === STYLES FOR SUB-PAGES (creator.html, quiz.html) === */
 /* ======================================================= */
-/* CẬP NHẬT: Cho các trang con nền kính mờ hợp lý hơn */
 .container { 
     max-width: 700px; 
     margin: 0 auto 40px; 
