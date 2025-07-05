@@ -30,11 +30,13 @@ function clearAllData() {
 }
 
 function takeQuizNow() {
+    // Tự động lưu nhóm đang làm dở trước khi chuyển trang
     if (currentGroup.questions.length > 0) {
-        if (!confirm("Bạn có một nhóm câu hỏi chưa lưu. Lưu lại và bắt đầu làm bài?")) {
-            return;
+        if (confirm("Bạn có một nhóm câu hỏi chưa lưu. Lưu lại và bắt đầu làm bài?")) {
+            saveGroup(); // Lưu nhóm lại
+        } else {
+            return; // Hủy nếu người dùng không muốn
         }
-        saveGroup();
     }
     if (questionGroups.length === 0) {
         alert("Chưa có câu hỏi nào để làm bài.");
