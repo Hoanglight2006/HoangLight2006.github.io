@@ -7,13 +7,14 @@ body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 20px;
-  color: #fff;
+  color: #fff; /* Đổi màu chữ mặc định thành trắng */
   text-align: center;
   background-image: url('images/background.jpg');
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
-  background-color: #333;
+  background-color: #333; /* Màu nền dự phòng nếu ảnh lỗi */
+  min-height: 100vh;
 }
 
 /* ============================================= */
@@ -40,7 +41,6 @@ body {
 .hero-section .greeting {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #fff;
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
@@ -49,7 +49,6 @@ body {
     font-size: 3.5rem;
     font-weight: 400;
     margin: 5px 0 20px 0;
-    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,7 +66,6 @@ body {
     font-size: 1.7rem;
     font-weight: 700;
     margin: 10px 0 40px 0;
-    color: #fff;
     height: 1.5em; 
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
@@ -108,6 +106,7 @@ body {
     gap: 15px;
 }
 
+/* CẬP NHẬT: Nền trong suốt và có bóng đổ cho chữ */
 .social-links a {
     text-decoration: none;
     font-weight: 700;
@@ -118,8 +117,7 @@ body {
     transition: background-color 0.3s, color 0.3s, transform 0.2s;
     animation: rainbow-border-chase 4s linear infinite;
     background: transparent;
-    backdrop-filter: none;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 
 .social-links a:hover {
@@ -147,6 +145,7 @@ body {
     margin-bottom: 60px;
 }
 
+/* CẬP NHẬT: Nền trong suốt cho thẻ chức năng */
 .function-card {
     padding: 25px;
     text-align: left;
@@ -154,13 +153,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #fff;
     border-radius: 12px;
     transition: transform 0.2s, background-color 0.3s;
     border: 2px solid;
     animation: rainbow-border-chase 4s linear infinite reverse;
     background: transparent;
-    backdrop-filter: none;
 }
 
 .function-card:hover {
@@ -170,32 +167,28 @@ body {
     border-color: #fff !important;
 }
 
+.function-card h2, .function-card p, .function-card .card-icon {
+    color: #fff; /* Chữ trắng */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6); /* Thêm bóng đổ cho dễ đọc */
+}
+.function-card p { color: #eee; }
+
 .function-card h2 {
     margin: 0 0 8px 0;
     font-size: 1.2rem;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
-
 .function-card p {
     margin: 0;
     font-size: 0.9rem;
-    color: #eee;
     line-height: 1.5;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
-
 .card-icon {
     font-size: 2rem;
     font-weight: bold;
-    color: #fff;
     opacity: 0.7;
     transition: opacity 0.2s;
 }
-
-.function-card:hover .card-icon {
-    opacity: 1;
-}
+.function-card:hover .card-icon { opacity: 1; }
 
 /* --- Phần liên hệ --- */
 .contact-section {
@@ -209,10 +202,9 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
     margin-bottom: 25px;
 }
-.contact-section p {
-    font-size: 1.1rem;
-}
+.contact-section p { font-size: 1.1rem; }
 
+/* CẬP NHẬT: Nền trong suốt cho email */
 .contact-section a {
     text-decoration: none;
     font-weight: 700;
@@ -222,8 +214,7 @@ body {
     transition: background-color 0.3s, color 0.3s, transform 0.2s;
     animation: rainbow-border-chase 4s linear infinite;
     background: transparent;
-    backdrop-filter: none;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 .contact-section a:hover {
     transform: translateY(-3px);
@@ -233,15 +224,16 @@ body {
     border-color: #fff !important;
 }
 
-
 /* ======================================================= */
 /* === STYLES FOR SUB-PAGES (creator.html, quiz.html) === */
 /* ======================================================= */
+/* CẬP NHẬT: Cho các trang con nền kính mờ hợp lý hơn */
 .container { 
     max-width: 700px; 
     margin: 0 auto 40px; 
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding: 30px; 
     border-radius: 15px; 
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -315,7 +307,7 @@ button.danger-btn:hover { background-color: #c62828; }
 /* === TỐI ƯU CHO DI ĐỘNG (ĐÃ CẬP NHẬT) === */
 @media (max-width: 768px) {
   .hero-section h1 {
-    font-size: 2.2rem; /* Giảm thêm một chút */
+    font-size: 2.2rem;
   }
   .hero-section .job-title {
     font-size: 1.4rem;
@@ -324,11 +316,9 @@ button.danger-btn:hover { background-color: #c62828; }
     background-attachment: scroll;
   }
 }
-
-/* Thêm quy tắc cho màn hình rất nhỏ */
 @media (max-width: 480px) {
   .hero-section h1 {
-    font-size: 1.9rem; /* Giảm mạnh hơn nữa */
+    font-size: 1.9rem;
     gap: 8px;
   }
   .hero-section .job-title {
