@@ -6,7 +6,10 @@ const QUIZ_TO_TAKE_KEY = 'quizToTakeNow';
 
 // --- LOGIC LƯU VÀ KHÔI PHỤC TIẾN TRÌNH LÀM BÀI ---
 function saveQuizState() {
-    const quizState = { questions: flatQuestions, answers: userAnswers };
+    const quizState = {
+        questions: flatQuestions,
+        answers: userAnswers
+    };
     localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(quizState));
 }
 
@@ -14,7 +17,12 @@ function resumeQuiz() {
     const savedStateJSON = localStorage.getItem(QUIZ_STATE_KEY);
     if (savedStateJSON) {
         const savedState = JSON.parse(savedStateJSON);
-        startQuiz(savedState.questions, savedState.answers, true); // Thêm cờ để không xóa state
+        // Thay vì gọi startQuiz, ta chỉ cần điền dữ liệu và render
+        flatQuestions = savedState.questions;
+        userAnswers = savedState.answers;
+        document.getElementById("quiz-taking-wrapper").style.display = "none";
+        document.getElementById("quiz-display-wrapper").style.display = "block";
+        renderQuiz();
     }
 }
 
@@ -30,19 +38,14 @@ function shuffleArray(array) {
     }
 }
 
-function startQuiz(data, savedAnswers = {}, isResuming = false) {
-    if (!isResuming) {
-        clearQuizState();
-        flatQuestions = [];
-        data.forEach(group => {
-            shuffleArray(group.questions);
-            group.questions.forEach(q => flatQuestions.push({ ...q, context: group.context }));
-        });
-        userAnswers = {};
-    } else {
-        flatQuestions = data;
-        userAnswers = savedAnswers;
-    }
+function startQuiz(data) {
+    clearQuizState(); // Xóa bài làm cũ trước khi bắt đầu bài mới
+    flatQuestions = [];
+    data.forEach(group => {
+        shuffleArray(group.questions);
+        group.questions.forEach(q => flatQuestions.push({ ...q, context: group.context }));
+    });
+    userAnswers = {};
     
     document.getElementById("quiz-taking-wrapper").style.display = "none";
     document.getElementById("quiz-display-wrapper").style.display = "block";
