@@ -13,8 +13,13 @@ function saveDataToLocalStorage() {
 function loadDataFromLocalStorage() {
     const savedData = localStorage.getItem(CREATION_DATA_KEY);
     if (savedData) {
-        questionGroups = JSON.parse(savedData);
-        updateTotalQuestionsStatus();
+        try {
+            questionGroups = JSON.parse(savedData);
+            updateTotalQuestionsStatus();
+        } catch(e) {
+            console.error("Lỗi đọc dữ liệu đã lưu:", e);
+            localStorage.removeItem(CREATION_DATA_KEY);
+        }
     }
 }
 
@@ -30,12 +35,11 @@ function clearAllData() {
 }
 
 function takeQuizNow() {
-    // Tự động lưu nhóm đang làm dở trước khi chuyển trang
     if (currentGroup.questions.length > 0) {
         if (confirm("Bạn có một nhóm câu hỏi chưa lưu. Lưu lại và bắt đầu làm bài?")) {
-            saveGroup(); // Lưu nhóm lại
+            saveGroup();
         } else {
-            return; // Hủy nếu người dùng không muốn
+            return;
         }
     }
     if (questionGroups.length === 0) {

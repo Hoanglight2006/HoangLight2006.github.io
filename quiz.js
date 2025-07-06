@@ -6,20 +6,19 @@ const QUIZ_TO_TAKE_KEY = 'quizToTakeNow';
 
 // --- LOGIC LƯU VÀ KHÔI PHỤC TIẾN TRÌNH LÀM BÀI ---
 function saveQuizState() {
-    const quizState = {
-        questions: flatQuestions,
-        answers: userAnswers
-    };
-    localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(quizState));
+    if (flatQuestions.length > 0) {
+        const quizState = { questions: flatQuestions, answers: userAnswers };
+        localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(quizState));
+    }
 }
 
 function resumeQuiz() {
     const savedStateJSON = localStorage.getItem(QUIZ_STATE_KEY);
     if (savedStateJSON) {
         const savedState = JSON.parse(savedStateJSON);
-        // Thay vì gọi startQuiz, ta chỉ cần điền dữ liệu và render
         flatQuestions = savedState.questions;
-        userAnswers = savedState.answers;
+        userAnswers = savedState.answers || {};
+        
         document.getElementById("quiz-taking-wrapper").style.display = "none";
         document.getElementById("quiz-display-wrapper").style.display = "block";
         renderQuiz();
@@ -38,12 +37,15 @@ function shuffleArray(array) {
     }
 }
 
-function startQuiz(data) {
-    clearQuizState(); // Xóa bài làm cũ trước khi bắt đầu bài mới
+function startQuiz(groupsData) {
+    clearQuizState(); 
     flatQuestions = [];
-    data.forEach(group => {
-        shuffleArray(group.questions);
-        group.questions.forEach(q => flatQuestions.push({ ...q, context: group.context }));
+    // Không xáo trộn thứ tự các nhóm, chỉ xáo trộn câu hỏi bên trong (nếu muốn)
+    groupsData.forEach(group => {
+        // shuffleArray(group.questions); // Tạm thời tắt xáo trộn câu hỏi trong nhóm
+        group.questions.forEach(q => {
+            flatQuestions.push({ ...q, context: group.context });
+        });
     });
     userAnswers = {};
     
@@ -55,23 +57,32 @@ function startQuiz(data) {
 function renderQuiz() {
     const quizContainer = document.getElementById("quiz-container");
     quizContainer.innerHTML = "";
-    let lastContext = null;
+    
+    let overallQuestionIndex = 0;
+    let currentContext = null;
+    let groupContainer = null;
 
     flatQuestions.forEach((q, index) => {
-        if (q.context && q.context !== lastContext) {
-            const contextEl = document.createElement("div");
-            contextEl.className = "question-context";
-            contextEl.textContent = q.context;
-            quizContainer.appendChild(contextEl);
-            lastContext = q.context;
-        }
+        // Nếu context thay đổi (hoặc là câu hỏi đơn lẻ đầu tiên), tạo một group container mới
+        if (q.context !== currentContext) {
+            currentContext = q.context;
+            groupContainer = document.createElement("div");
+            groupContainer.className = "question-group-container";
+            quizContainer.appendChild(groupContainer);
 
+            if (q.context) {
+                const contextEl = document.createElement("div");
+                contextEl.className = "question-context";
+                contextEl.textContent = q.context;
+                groupContainer.appendChild(contextEl);
+            }
+        }
+        
         const questionItem = document.createElement("div");
         questionItem.className = "quiz-question-item";
         let questionHTML = '';
         if (q.questionImage) { questionHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`; }
-        if (q.question) { questionHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`; }
-        else { questionHTML += `<p class="question-title">Câu ${index + 1}:</p>`; }
+        questionHTML += `<p class="question-title">Câu ${index + 1}: ${q.question || ''}</p>`;
         questionItem.innerHTML = questionHTML;
 
         if (q.type === "multiple") {
@@ -113,7 +124,7 @@ function renderQuiz() {
                     const img = document.createElement('img');
                     img.src = value.image;
                     img.alt = 'Hình ảnh đáp án';
-                    img.className = 'quiz-image';
+                    img.className = 'quiz-image answer-image'; // Thêm class để style riêng
                     optionContent.appendChild(img);
                 }
                 optionLabel.appendChild(optionContent);
@@ -125,13 +136,17 @@ function renderQuiz() {
             essayInput.rows = 4;
             essayInput.placeholder = "Nhập câu trả lời của bạn...";
             essayInput.value = userAnswers[index] || '';
-            essayInput.oninput = () => {
-                userAnswers[index] = essayInput.value.trim();
-                saveQuizState();
-            };
+            essayInput.oninput = () => { userAnswers[index] = essayInput.value.trim(); saveQuizState(); };
             questionItem.appendChild(essayInput);
         }
-        quizContainer.appendChild(questionItem);
+        
+        // Luôn thêm câu hỏi vào group container hiện tại
+        if (groupContainer) {
+            groupContainer.appendChild(questionItem);
+        } else {
+            // Fallback cho trường hợp không có context ngay từ đầu
+            quizContainer.appendChild(questionItem);
+        }
     });
 }
 
@@ -150,29 +165,47 @@ function submitQuiz() {
         const userAnswerKey = userAnswers[index];
         const isCorrect = userAnswerKey === q.answer;
         resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
-        let resultHTML = '';
-        if (q.context && q.context !== lastContextRendered) { resultHTML += `<div class="question-context">${q.context}</div>`; lastContextRendered = q.context; }
-        if (q.questionImage) resultHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`;
-        resultHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+        
+        if (q.context && q.context !== lastContextRendered) {
+            resultItem.innerHTML += `<div class="question-context">${q.context}</div>`;
+            lastContextRendered = q.context;
+        }
+
+        let questionHTML = '';
+        if (q.questionImage) questionHTML += `<img src="${q.questionImage}" class="quiz-image" alt="Hình ảnh câu hỏi">`;
+        questionHTML += `<p class="question-title">Câu ${index + 1}: ${q.question}</p>`;
+        
+        let answerHTML = '<div class="result-answer">';
         let userAnswerText = '<i>Chưa trả lời</i>';
         if (q.type === 'multiple' && userAnswerKey) {
             const answerObj = q.options[userAnswerKey];
-            userAnswerText = answerObj.text || '';
-            if (answerObj.image) userAnswerText += `<br><img src="${answerObj.image}" class="quiz-image" style="max-width: 150px;">`;
-        } else if (userAnswerKey) { userAnswerText = userAnswerKey; }
-        if (userAnswerText.trim() === '' && q.type === 'multiple') userAnswerText = '<i>(Chỉ có hình ảnh)</i>';
-        let correctAnswerHTML = '';
+            userAnswerText = answerObj.text || '<i>(Chỉ có hình ảnh)</i>';
+            if (answerObj.image) {
+                // Sửa lỗi: Bỏ max-width inline, dùng class
+                userAnswerText += `<br><img src="${answerObj.image}" class="quiz-image answer-image">`;
+            }
+        } else if (userAnswerKey) {
+            userAnswerText = userAnswerKey;
+        }
+        answerHTML += `<p><strong>Bạn trả lời:</strong> ${userAnswerText}</p>`;
+        
         if (!isCorrect) {
+            let correctAnswerText = '';
             if (q.type === 'multiple') {
                 const correctObj = q.options[q.answer];
-                let correctAnswerText = correctObj.text || '';
-                if (correctObj.image) correctAnswerText += `<br><img src="${correctObj.image}" class="quiz-image" style="max-width: 150px;">`;
-                if (correctAnswerText.trim() === '') correctAnswerText = '<i>(Chỉ có hình ảnh)</i>';
-                correctAnswerHTML = `<p><strong>Đáp án đúng:</strong> ${correctAnswerText}</p>`;
-            } else { correctAnswerHTML = `<p><strong>Đáp án đúng:</strong> ${q.answer}</p>`; }
+                correctAnswerText = correctObj.text || '<i>(Chỉ có hình ảnh)</i>';
+                if (correctObj.image) {
+                     // Sửa lỗi: Bỏ max-width inline, dùng class
+                    correctAnswerText += `<br><img src="${correctObj.image}" class="quiz-image answer-image">`;
+                }
+            } else { 
+                correctAnswerText = q.answer;
+            }
+            answerHTML += `<p><strong>Đáp án đúng:</strong> ${correctAnswerText}</p>`;
         }
-        resultHTML += `<div class="result-answer"><p><strong>Bạn trả lời:</strong> ${userAnswerText}</p>${correctAnswerHTML}</div>`;
-        resultItem.innerHTML = resultHTML;
+        
+        answerHTML += '</div>';
+        resultItem.innerHTML += questionHTML + answerHTML;
         resultsContainer.appendChild(resultItem);
     });
     
@@ -188,7 +221,7 @@ function retakeQuiz() {
     document.getElementById("post-quiz-controls").style.display = "none";
     document.getElementById("quiz-container").style.display = "block";
     document.getElementById("navigation-controls").style.display = "flex";
-    userAnswers = {}; // Xóa câu trả lời cũ khi làm lại
+    userAnswers = {};
     clearQuizState();
     renderQuiz();
     window.scrollTo(0, 0);
@@ -199,16 +232,16 @@ function goHome() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Ưu tiên khôi phục bài làm từ đề vừa tạo
     const quizDataFromCreator = localStorage.getItem(QUIZ_TO_TAKE_KEY);
     if (quizDataFromCreator) {
-        localStorage.removeItem(QUIZ_TO_TAKE_KEY); // Xóa ngay để không bị lặp lại
-        const groupsData = JSON.parse(quizDataFromCreator);
-        startQuiz(groupsData);
+        localStorage.removeItem(QUIZ_TO_TAKE_KEY);
+        try {
+            const groupsData = JSON.parse(quizDataFromCreator);
+            startQuiz(groupsData);
+        } catch (e) { alert("Lỗi khi đọc dữ liệu đề thi."); }
         return;
     }
 
-    // Nếu không, kiểm tra xem có bài làm dang dở không
     if (localStorage.getItem(QUIZ_STATE_KEY)) {
         if (confirm("Phát hiện một bài làm đang dang dở. Bạn có muốn tiếp tục không?")) {
             resumeQuiz();
@@ -217,7 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Gắn sự kiện cho ô tải file
     const fileInput = document.getElementById("jsonFileInput");
     fileInput.addEventListener("change", (event) => {
         const file = event.target.files[0];

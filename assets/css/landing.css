@@ -1,0 +1,86 @@
+/* === STYLES FOR NEW LANDING PAGE (index.html) === */
+.landing-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.hero-section {
+    padding: 20px;
+    margin-bottom: 40px;
+}
+.hero-section .greeting {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.hero-section h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 3.5rem;
+    font-weight: 400;
+    margin: 5px 0 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.verified-badge { color: #1DA1F2; display: inline-flex; align-items: center; }
+.hero-section .job-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin: 10px 0 40px 0;
+    height: 1.5em; 
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.dynamic-text {
+    font-weight: 700;
+    background: linear-gradient(90deg, #33c3ff, #a4ff89, #ff337a, #33c3ff);
+    background-size: 400% 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    position: relative;
+    animation: animated-gradient-text 5s linear infinite;
+}
+.dynamic-text::after {
+    content: '|';
+    position: absolute;
+    right: -10px;
+    animation: blink 1s infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes animated-gradient-text { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+.social-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+.social-links a { text-decoration: none; font-weight: 700; font-size: 1rem; border: 2px solid; padding: 10px 25px; border-radius: 50px; transition: background-color 0.3s, color 0.3s, transform 0.2s; animation: rainbow-border-chase 4s linear infinite; background: transparent; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+.social-links a:hover { transform: translateY(-3px); animation-play-state: paused; background-color: rgba(0, 0, 0, 0.5); color: #fff !important; border-color: #fff !important; }
+@keyframes rainbow-border-chase { 0% { color: #ff6493; border-color: #8a64ff; } 25% { color: #ffdd64; border-color: #64ffb9; } 50% { color: #8a64ff; border-color: #ff6493; } 75% { color: #64ffb9; border-color: #ffdd64; } 100% { color: #ff6493; border-color: #8a64ff; } }
+.functions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 60px; }
+.function-card { padding: 25px; text-align: left; text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-radius: 12px; transition: transform 0.2s, background-color 0.3s; border: 2px solid; animation: rainbow-border-chase 4s linear infinite reverse; background: transparent; }
+.function-card:hover { transform: translateY(-5px); animation-play-state: paused; background-color: rgba(0, 0, 0, 0.5); border-color: #fff !important; }
+.function-card h2, .function-card p, .function-card .card-icon { text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+.function-card p { color: #eee; }
+.function-card h2 { margin: 0 0 8px 0; font-size: 1.2rem; }
+.function-card p { margin: 0; font-size: 0.9rem; line-height: 1.5; }
+.card-icon { font-size: 2rem; font-weight: bold; opacity: 0.7; transition: opacity 0.2s; }
+.function-card:hover .card-icon { opacity: 1; }
+.contact-section { margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+.contact-section h2 { font-size: 1.5rem; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); margin-bottom: 25px; }
+.contact-section p { font-size: 1.1rem; }
+.contact-section a { text-decoration: none; font-weight: 700; border: 2px solid; padding: 10px 25px; border-radius: 50px; transition: background-color 0.3s, color 0.3s, transform 0.2s; animation: rainbow-border-chase 4s linear infinite; background: transparent; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+.contact-section a:hover { transform: translateY(-3px); animation-play-state: paused; background-color: rgba(0, 0, 0, 0.5); color: #fff !important; border-color: #fff !important; }
+
+/* Responsive cho landing page */
+@media (max-width: 768px) {
+  .hero-section h1 { font-size: 2.5rem; }
+  .hero-section .job-title { font-size: 1.5rem; }
+}
+@media (max-width: 480px) {
+  .hero-section h1 { font-size: 2rem; gap: 8px; }
+  .hero-section .job-title { font-size: 1.2rem; }
+  .social-links a, .contact-section a { padding: 8px 20px; font-size: 0.9rem; }
+}
