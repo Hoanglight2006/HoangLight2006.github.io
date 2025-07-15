@@ -1,83 +1,66 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dương Đình Hoàng</title>
-    <link rel="stylesheet" href="assets/css/global.css">
-    <link rel="stylesheet" href="assets/css/landing.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dương Đình Hoàng</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="landing-page">
-        <header class="hero-section">
-            <p class="greeting">Hi, this is</p>
-            <h1>Dương Đình Hoàng <span class="verified-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M10,17l-5-5l1.41-1.41L10,14.17l7.59-7.59L19,8l-9,9z"></path></svg></span></h1>
-            <p class="job-title">and I'm a <span class="dynamic-text" id="job-role"></span></p>
-            <div class="social-links">
-                <a href="https://fb.com/hoanglight2" target="_blank">Facebook</a>
-                <a href="https://github.com/Hoanglight2006" target="_blank">GitHub</a>
-                <a href="https://zalo.me/0349769308" target="_blank">Zalo</a>
-            </div>
-        </header>
-<!--         <main class="functions-grid">
-            <a href="creator.html" class="function-card">
-                <div class="card-content"><h2>💡 Tạo Đề Thi</h2><p>Soạn thảo bài trắc nghiệm với câu hỏi, đáp án và hình ảnh.</p></div><span class="card-icon">→</span>
-            </a>
-            <a href="quiz.html" class="function-card">
-                <div class="card-content"><h2>📝 Làm Bài Thi</h2><p>Tải lên tệp .json để bắt đầu làm bài và kiểm tra kiến thức.</p></div><span class="card-icon">→</span>
-            </a>
-        </main> -->
-        <footer class="contact-section">
-            <h2>Liên hệ tôi</h2>
-            <p><a href="mailto:hoanglightvn@gmail.com">hoanglightvn@gmail.com</a></p>
-        </footer>
-    </div>
-    
-    <script>
-        const roles = ["Developer.", "Designer."];
-        const roleElement = document.getElementById("job-role");
-        
-        let roleIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        
-        const typingSpeed = 150;
-        const erasingSpeed = 100;
-        const delayBetweenRoles = 2000;
+  <div class="landing-page">
+    <header class="hero-section">
+      <p class="greeting">Hi, this is</p>
+      <h1>Dương Đình Hoàng <span class="verified-badge">✔</span></h1>
+      <p class="job-title">and I'm a <span class="dynamic-text" id="job-role"></span></p>
+      <div class="social-links">
+        <a href="https://fb.com/hoanglight2" target="_blank" class="button-style"><span>Facebook</span></a>
+        <a href="https://github.com/Hoanglight2006" target="_blank" class="button-style"><span>GitHub</span></a>
+        <a href="https://zalo.me/0349769308" target="_blank" class="button-style"><span>Zalo</span></a>
+      </div>
+    </header>
+    <footer class="contact-section">
+      <h2>Liên hệ tôi</h2>
+      <div class="email-link-wrapper">
+        <a href="mailto:hoanglightvn@gmail.com" class="button-style"><span>hoanglightvn@gmail.com</span></a>
+      </div>
+    </footer>
+  </div>
+  <script>
+    // Giữ nguyên JavaScript cho hiệu ứng gõ chữ
+    const roles = ["Developer.", "Designer.", "Creator."];
+    const roleElement = document.getElementById("job-role");
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
 
-        function typeEffect() {
-            const currentRole = roles[roleIndex];
-            
-            if (isDeleting) {
-                // Xóa chữ
-                roleElement.textContent = currentRole.substring(0, charIndex - 1);
-                charIndex--;
-                
-                if (charIndex === 0) {
-                    isDeleting = false;
-                    roleIndex = (roleIndex + 1) % roles.length;
-                    setTimeout(typeEffect, 500); // Dừng một chút trước khi gõ chữ mới
-                } else {
-                    setTimeout(typeEffect, erasingSpeed); // Tiếp tục xóa
-                }
-            } else {
-                // Gõ chữ
-                roleElement.textContent = currentRole.substring(0, charIndex + 1);
-                charIndex++;
-                
-                if (charIndex === currentRole.length) {
-                    isDeleting = true;
-                    setTimeout(typeEffect, delayBetweenRoles); // Dừng lại khi gõ xong
-                } else {
-                    setTimeout(typeEffect, typingSpeed); // Tiếp tục gõ
-                }
-            }
-        }
-        
-        document.addEventListener("DOMContentLoaded", typeEffect);
-    </script>
+    function typeEffect() {
+      const currentRole = roles[roleIndex];
+
+      if (isDeleting) {
+        roleElement.textContent = currentRole.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        roleElement.textContent = currentRole.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      if (!isDeleting && charIndex === currentRole.length) {
+        isDeleting = true;
+        setTimeout(typeEffect, 2000);
+        return;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        roleIndex = (roleIndex + 1) % roles.length;
+      }
+      
+      const typingSpeed = isDeleting ? 100 : 200;
+      setTimeout(typeEffect, typingSpeed);
+    }
+
+    document.addEventListener("DOMContentLoaded", typeEffect);
+  </script>
 </body>
 </html>
