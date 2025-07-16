@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
   <div class="landing-page">
     <header class="hero-section">
@@ -20,6 +23,37 @@
         <a href="https://github.com/Hoanglight2006" target="_blank" class="button-style"><span>GitHub</span></a>
         <a href="https://zalo.me/0349769308" target="_blank" class="button-style"><span>Zalo</span></a>
       </div>
+      <!-- index.html: trong <header class="hero-section"> ngay đầu -->
+      <button id="theme-toggle" aria-label="Chuyển theme">🌙</button>
+      <section class="about-section">
+        <h2>About Me</h2>
+        <p>Xin chào! Mình là Dương Đình Hoàng, một developer yêu thích sự tìm tòi khám phá về mọi thứ.</p>
+      </section>
+      <section class="portfolio-section">
+        <h2>My Projects</h2>
+        <div class="portfolio-grid">
+          <div class="card">
+            <img src="project1.png" alt="">
+            <h3>Code web này nè</h3>
+            <a href="https://github.com/Hoanglight2006/HoangLight2006.github.io" target="_blank" class="button-style"><span>View on
+                GitHub</span></a>
+          </div>
+          <div class="card">
+            <img src="project2.png" alt="">
+            <h3>Vẫn là cái bên cạnh :v</h3>
+            <a href="https://github.com/Hoanglight2006/HoangLight2006.github.io" target="_blank" class="button-style"><span>View on
+                GitHub</span></a>
+          </div>
+          <!-- copy thêm card nếu muốn -->
+        </div>
+      </section>
+      <section class="skills-section">
+        <h2>Skills</h2>
+        <ul class="skills-list">
+          <li>Java cơ bản</li>
+        </ul>
+      </section>
+
     </header>
     <footer class="contact-section">
       <h2>Liên hệ tôi</h2>
@@ -55,12 +89,26 @@
         isDeleting = false;
         roleIndex = (roleIndex + 1) % roles.length;
       }
-      
+
       const typingSpeed = isDeleting ? 100 : 200;
       setTimeout(typeEffect, typingSpeed);
     }
 
     document.addEventListener("DOMContentLoaded", typeEffect);
+
+    const toggleBtn = document.getElementById('theme-toggle');
+    // Kiểm tra localStorage
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+      toggleBtn.textContent = '☀️';
+    }
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      toggleBtn.textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
   </script>
 </body>
+
 </html>
