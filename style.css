@@ -1,4 +1,3 @@
-/* --- FILE CSS ĐÃ SỬA CHUẨN THEO YÊU CẦU --- */
 
 /* Basic reset */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -87,7 +86,6 @@ body {
   margin-bottom: 40px;
 }
 
-/* --- PHẦN CSS MỚI CHO NÚT BẤM (ĐÃ SỬA) --- */
 
 /* Dải màu chuẩn giống như của chức danh */
 :root {
@@ -120,8 +118,6 @@ body.dark-mode {
 }
 #theme-toggle:hover { transform: scale(1.2); }
 
-
-/* DÁN CODE MỚI NÀY VÀO */
 
 /* Animation cho viền (chạy qua lại mượt mà) */
 @keyframes border-animation {
@@ -294,7 +290,7 @@ body.dark-mode .verified-badge {
   color: transparent;
   font-weight: bold;
 }
-/* === Override cho các section khi dark mode === */
+
 body.dark-mode .about-section,
 body.dark-mode .portfolio-section,
 body.dark-mode .skills-section {
