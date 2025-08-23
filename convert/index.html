@@ -20,31 +20,48 @@ input, button { margin: 10px; padding: 8px 12px; }
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 const fileInput = document.getElementById('fileInput');
-const startBtn = document.getElementById('startBtn');
-const progress = document.getElementById('progress');
-const output = document.getElementById('output');
+const startBtn  = document.getElementById('startBtn');
+const progress  = document.getElementById('progress');
+const output    = document.getElementById('output');
 
 startBtn.onclick = async () => {
-  if (!fileInput.files[0]) {
-    alert("Chọn ảnh trước!");
-    return;
-  }
+  const file = fileInput.files[0];
+  if (!file) { alert("Chọn ảnh trước!"); return; }
+
   progress.textContent = "Đang xử lý...";
   output.textContent = "";
 
-  const { data: { text } } = await Tesseract.recognize(file, 'vie+eng', {
-    logger: m => console.log(m),
-    tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*()[]{}<>.,!?/:;+=-_',
-    tessedit_pageseg_mode: '6' // Assume a single block of text
-});
+  try {
+    // Tạo worker + hiển thị tiến độ
+    const worker = await Tesseract.createWorker('vie+eng', 1, {
+      logger: m => {
+        if (m.status) {
+          progress.textContent = m.progress != null
+            ? `${m.status} ${Math.round(m.progress * 100)}%`
+            : m.status;
+        }
+      }
+    });
 
+    // Cấu hình cho ký tự đặc biệt + chế độ phân trang
+    await worker.setParameters({
+      tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*()[]{}<>.,!?/:;+=-_',
+      tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK  // tương đương --psm 6
+    });
 
-  const { data: { text } } = await worker.recognize(fileInput.files[0]);
-  await worker.terminate();
+    // OCR
+    const { data: { text } } = await worker.recognize(file);
+    await worker.terminate();
 
-  progress.textContent = "Hoàn tất";
-  output.textContent = text;
+    progress.textContent = "Hoàn tất";
+    output.textContent = text.trim();
+  } catch (err) {
+    console.error(err);
+    progress.textContent = "Lỗi OCR";
+    output.textContent = String(err);
+  }
 };
 </script>
+
 </body>
 </html>
