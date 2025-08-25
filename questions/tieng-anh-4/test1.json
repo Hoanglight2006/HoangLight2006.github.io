@@ -1,0 +1,40 @@
+{
+  "title": "Tiếng anh - Test 1",
+  "questions": [
+    {
+      "id": "ex1",
+      "type": "mcq",
+      "question": "1. HTML là gì?",
+      "options": ["Ngôn ngữ lập trình", "Ngôn ngữ đánh dấu", "Trình duyệt web"],
+      "answer": "B"
+    },
+    {
+      "id": "ex2",
+      "type": "mcq",
+      "question": "2. Thẻ nào tạo tiêu đề?",
+      "options": ["&lt;h1&gt;", "&lt;p&gt;", "&lt;title&gt;"],
+      "answer": "A"
+    },
+    {
+      "id": "ex3",
+      "type": "fill",
+      "reading": "CSS dùng để _____ giao diện.",
+      "answer": "định dạng"
+    },
+    {
+      "id": "ex4",
+      "type": "drag",
+      "question": "Sắp xếp: CSS / được / viết / bằng",
+      "words": ["CSS","được","viết","bằng"],
+      "answer": ["CSS","được","viết","bằng"]
+    },
+    {
+      "id": "ex5",
+      "type": "reading-mcq",
+      "reading": "HTML được Tim Berners-Lee tạo ra.",
+      "question": "HTML được ai tạo ra?",
+      "options": ["Bill Gates","Tim Berners-Lee","Mark Zuckerberg"],
+      "answer": "B"
+    }
+  ]
+}

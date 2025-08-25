@@ -1,13 +1,13 @@
+
 const rightPanel = document.getElementById('rightPanel');
 const btns = document.querySelectorAll('.side-btn');
 
-// thêm biến toàn cục lưu chọn test & trạng thái lưu trữ câu trả lời
+// Global current selection & saved answer state
 window.currentTest = { subject: null, number: 1 };
-window.savedState = window.savedState || {
-	// exercises state: ex1/ex2 store selected value ('A'|'B'|'C'), ex3 single text, ex4 order array of data-id
-	exercises: { ex1: null, ex2: null, ex3: '', ex4: [] }
-};
+window.savedState = window.savedState || { exercises: {} }; // per-question id -> value
+window.currentData = null; // holds loaded JSON model
 
+// Static 'About' HTML stays in-memory
 const contents = {
   about: `
     <div class="home-grid">
@@ -72,72 +72,129 @@ const contents = {
       </div>
     </div>
   `,
+  // Placeholder content for 'exercises' if user clicks menu directly
   exercises: `
     <div class="exercise-container">
-      <!-- Header center (removed + Test button) -->
       <div class="ex-header">
-        <h3 class="ex-title">Bộ khung câu hỏi</h3>
+        <h3 class="ex-title">Chọn Test từ Trang chủ đã nhé 👀</h3>
+      </div>
+    </div>
+  `,
+  projects: ``,
+  contact: `<h2>Liên hệ</h2><p>Email: hoanglight2006@gmail.com<br>Facebook: fb.com/hoanglight2</p>`
+};
+
+// Map subject title -> folder slug
+const subjectMap = {
+  'Thiết Kế Web': 'thiet-ke-web',
+  'Mạng Máy Tính': 'mang-may-tinh',
+  'Cơ sở dữ liệu': 'co-so-du-lieu',
+  'Tiếng anh 4': 'tieng-anh-4'
+};
+
+// Side menu switching
+btns.forEach(btn => {
+  btn.addEventListener('click', function() {
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const key = btn.getAttribute('data-content');
+    rightPanel.innerHTML = contents[key] || '';
+    if (key === 'exercises' && !window.currentData) {
+      // If no currentData yet, show placeholder (already set)
+    } else if (key === 'exercises' && window.currentData) {
+      // Re-render current loaded test
+      renderExercises(window.currentData);
+    }
+  });
+});
+
+// Click "Test X" on About -> load that test JSON and show Exercises
+rightPanel.addEventListener('click', function(e) {
+  if (e.target && e.target.classList.contains('card-btn')) {
+    const card = e.target.closest('.home-card');
+    const subj = card ? (card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : null) : null;
+    const m = (e.target.textContent || '').match(/(\d+)/);
+    const num = m ? Number(m[1]) : 1;
+    window.currentTest = { subject: subj || 'Bộ khung câu hỏi', number: num };
+    loadCurrentTest();
+  }
+});
+
+function loadCurrentTest() {
+  const { subject, number } = window.currentTest || {};
+  const slug = subjectMap[subject] || null;
+  if (!slug) {
+    rightPanel.innerHTML = '<p>Không xác định được môn học.</p>';
+    return;
+  }
+  // Activate 'Bài tập' tab UI without triggering its default content
+  const exerciseBtn = document.querySelector('.side-btn[data-content="exercises"]');
+  if (exerciseBtn) {
+    btns.forEach(b => b.classList.remove('active'));
+    exerciseBtn.classList.add('active');
+  }
+  rightPanel.innerHTML = '<div class="exercise-container"><div class="ex-header"><h3 class="ex-title">Đang tải câu hỏi...</h3></div></div>';
+  const url = `questions/${slug}/test${number}.json`;
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      window.currentData = data;
+      // Reset per-question state for a fresh attempt of this test
+      window.savedState.exercises = {};
+      renderExercises(data);
+    })
+    .catch(err => {
+      rightPanel.innerHTML = `<div class="exercise-container"><div class="ex-header"><h3 class="ex-title">Lỗi tải câu hỏi: ${url}</h3><p>${err.message}</p></div></div>`;
+    });
+}
+
+// Global click handlers for MCQ select & check-all & overlay buttons
+rightPanel.addEventListener('click', function(e) {
+  const opt = e.target.closest && e.target.closest('.mc-option');
+  if (opt) {
+    const parent = opt.parentElement;
+    if (parent) parent.querySelectorAll('.mc-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    // save selection by question id
+    const qCard = opt.closest('.q-card');
+    if (qCard && qCard.id) {
+      window.savedState.exercises[qCard.id] = opt.getAttribute('data-value');
+    }
+  }
+
+  const ctrl = e.target.closest && e.target.closest('[data-action="check-all"]');
+  if (ctrl) {
+    computeAndShowScore();
+  }
+
+  if (e.target && e.target.id === 'closeResult') {
+    const overlay = rightPanel.querySelector('#resultOverlay');
+    if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+  }
+
+  if (e.target && e.target.id === 'retryResult') {
+    window.savedState.exercises = {};
+    const overlay = rightPanel.querySelector('#resultOverlay');
+    if (overlay) overlay.style.display = 'none';
+    // Re-render to clear selections/inputs
+    if (window.currentData) renderExercises(window.currentData);
+  }
+});
+
+function renderExercises(data) {
+  const html = `
+    <div class="exercise-container">
+      <div class="ex-header">
+        <h3 class="ex-title">${data.title || (window.currentTest.subject + ' - Test ' + window.currentTest.number)}</h3>
+      </div>
+      ${data.questions.map((q, idx) => renderQuestion(q, idx)).join('')}
+      <div class="ex-controls" style="justify-content:center;">
+        <button id="check" class="ex-btn btn-check-like" data-action="check-all">Check</button>
       </div>
 
-      <!-- 1) Multiple choice (single) -->
-      <div class="q-card" id="ex1">
-        <h4>1. Chọn 1 đáp án đúng</h4>
-        <div class="mc-options">
-          <button class="mc-option" data-value="A"><strong>A</strong> He go to school every day.</button>
-          <button class="mc-option" data-value="B"><strong>B</strong> He goes to school every day.</button>
-          <button class="mc-option" data-value="C"><strong>C</strong> He going to school every day.</button>
-        </div>
-      </div>
-
-      <!-- 2) MC with reading on the left -->
-      <div class="q-card two-col" id="ex2">
-        <div class="reading-pane">
-          <h4>Reading</h4>
-          <p>Tom likes to read about nature. He often goes to the park to watch birds and plants.</p>
-        </div>
-        <div>
-          <h4>2. Based on the text, choose one</h4>
-          <div class="mc-options">
-            <button class="mc-option" data-value="A"><strong>A</strong> Tom hates nature.</button>
-            <button class="mc-option" data-value="B"><strong>B</strong> Tom likes to read about nature.</button>
-            <button class="mc-option" data-value="C"><strong>C</strong> Tom never goes outside.</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3) Reading with single fill-in field (input below question)
-           Note: placeholder removed and value won't be restored on revisit -->
-      <div class="q-card two-col" id="ex3">
-        <div class="reading-pane">
-          <h4>Reading</h4>
-          <p>My sister has a small garden near our house. She waters the plants every day.</p>
-        </div>
-        <div>
-          <h4>3. Điền từ vào chỗ trống</h4>
-          <input id="ex3-input" class="fill-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-        </div>
-      </div>
-
-      <!-- 4) Drag & drop -->
-      <div class="q-card" id="ex4">
-        <h4>4. Kéo thả để ghép câu hoàn chỉnh</h4>
-        <p>Sắp xếp các cụm để thành câu: "I / to the market / went / yesterday"</p>
-
-        <div class="drop-zone" id="drop-target"></div>
-
-        <div class="drag-pool" id="drag-pool">
-          <div class="draggable" draggable="true" data-id="w1">I</div>
-          <div class="draggable" draggable="true" data-id="w2">went</div>
-          <div class="draggable" draggable="true" data-id="w3">to the market</div>
-          <div class="draggable" draggable="true" data-id="w4">yesterday</div>
-        </div>
-
-        <div class="ex-controls" style="justify-content:center;">
-          <button id="check" class="ex-btn btn-check-like" data-action="check-all">Check</button>
-        </div>
-      </div>
-
-      <!-- Fullscreen result overlay (hidden until needed) -->
       <div id="resultOverlay" class="result-overlay" style="display:none;">
         <div class="result-card">
           <h2 id="resultScore">Điểm</h2>
@@ -149,213 +206,157 @@ const contents = {
         </div>
       </div>
     </div>
-  `,
-  projects: ``,
-  contact: `<h2>Liên hệ</h2><p>Email: hoanglight2006@gmail.com<br>Facebook: fb.com/hoanglight2</p>`
-};
+  `;
+  rightPanel.innerHTML = html;
+  initInteractions();
+}
 
-btns.forEach(btn => {
-  btn.addEventListener('click', function() {
-    btns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const key = btn.getAttribute('data-content');
-    rightPanel.innerHTML = contents[key] || '';
-    // initialize interactive parts if exercises loaded
-    if (key === 'exercises') initExercises();
-  });
-});
-
-// Thay listener xử lý khi bấm Test (trên trang About)
-// (bắt sự kiện bấm các nút Test ở trong vùng rightPanel)
-rightPanel.addEventListener('click', function(e) {
-  if (e.target && e.target.classList.contains('card-btn')) {
-    // lấy subject (tiêu đề của home-card) và số test từ text nút
-    const card = e.target.closest('.home-card');
-    const subj = card ? (card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : null) : null;
-    const btnText = e.target.textContent.trim();
-    const m = btnText.match(/(\d+)/);
-    const num = m ? Number(m[1]) : 1;
-    // lưu vào biến toàn cục
-    window.currentTest = { subject: subj || 'Bộ khung câu hỏi', number: num };
-    // kích hoạt nút Bài tập
-    const exerciseBtn = document.querySelector('.side-btn[data-content="exercises"]');
-    if (exerciseBtn) exerciseBtn.click();
-  }
-});
-
-// handle MC option clicks globally (works after content injected)
-// also update savedState for persistence
-rightPanel.addEventListener('click', function(e) {
-  const opt = e.target.closest && e.target.closest('.mc-option');
-  if (opt) {
-    const parent = opt.parentElement;
-    if (parent) parent.querySelectorAll('.mc-option').forEach(o => o.classList.remove('selected'));
-    opt.classList.add('selected');
-
-    // update savedState for the corresponding question (ex1/ex2)
-    const qCard = opt.closest('.q-card');
-    if (qCard && qCard.id) {
-      if (qCard.id === 'ex1') window.savedState.exercises.ex1 = opt.getAttribute('data-value');
-      if (qCard.id === 'ex2') window.savedState.exercises.ex2 = opt.getAttribute('data-value');
-    }
+function renderQuestion(q, idx) {
+  if (q.type === 'mcq') {
+    const letters = (q.options || []).map((_, i) => String.fromCharCode(65 + i));
+    return `
+      <div class="q-card" id="${q.id || ('q'+idx)}">
+        <h4>${q.question || ''}</h4>
+        <div class="mc-options">
+          ${(q.options || []).map((opt, i) => `
+            <button class="mc-option ${window.savedState.exercises[(q.id||('q'+idx))] === letters[i] ? 'selected':''}" data-value="${letters[i]}">
+              <strong>${letters[i]}</strong> ${opt}
+            </button>`).join('')}
+        </div>
+      </div>`;
   }
 
-  // Check all action (compute score and show overlay)
-  const ctrl = e.target.closest && e.target.closest('[data-action="check-all"]');
-  if (ctrl) {
-    // compute score
-    let score = 0;
-    // ex1 from savedState (fallback to DOM)
-    const ex1sel = window.savedState.exercises.ex1 || (rightPanel.querySelector('#ex1 .mc-option.selected') && rightPanel.querySelector('#ex1 .mc-option.selected').getAttribute('data-value'));
-    if (ex1sel === 'B') score += 1;
-    // ex2
-    const ex2sel = window.savedState.exercises.ex2 || (rightPanel.querySelector('#ex2 .mc-option.selected') && rightPanel.querySelector('#ex2 .mc-option.selected').getAttribute('data-value'));
-    if (ex2sel === 'B') score += 1;
-    // ex3 single input: read from DOM (do NOT restore previous input)
-    const ex3input = (rightPanel.querySelector('#ex3 #ex3-input') || {}).value || '';
-    if (ex3input.trim().toLowerCase() === 'garden') score += 1;
-    // ex4 drag: check order (use savedState if present)
-    const order = (window.savedState.exercises.ex4 && window.savedState.exercises.ex4.length) ? window.savedState.exercises.ex4.slice() : (function(){
-      const drop = rightPanel.querySelector('#drop-target');
-      return drop ? Array.from(drop.querySelectorAll('.draggable')).map(d => d.textContent.trim()) : [];
-    })();
-    const expected = ['I','went','to the market','yesterday'];
-    let dragCorrect = 0;
-    if (order.length === expected.length && order.every((v,i)=>v===expected[i])) dragCorrect = 1;
-    score += dragCorrect;
-
-    const total = 4;
-    const percent = Math.round((score / total) * 100);
-
-    // show overlay (darker)
-    const overlay = rightPanel.querySelector('#resultOverlay');
-    if (overlay) {
-      overlay.style.display = 'flex';
-      rightPanel.querySelector('#resultScore').textContent = `Điểm: ${score}/${total} (${percent}%)`;
-      rightPanel.querySelector('#resultText').textContent = 'Kết quả đã được nộp.';
-      overlay.setAttribute('aria-hidden', 'false');
-    }
+  if (q.type === 'reading-mcq') {
+    const letters = (q.options || []).map((_, i) => String.fromCharCode(65 + i));
+    return `
+      <div class="q-card two-col" id="${q.id || ('q'+idx)}">
+        <div class="reading-pane">
+          <h4>Reading</h4>
+          <p>${q.reading || ''}</p>
+        </div>
+        <div>
+          <h4>${q.question || ''}</h4>
+          <div class="mc-options">
+            ${(q.options || []).map((opt, i) => `
+              <button class="mc-option ${window.savedState.exercises[(q.id||('q'+idx))] === letters[i] ? 'selected':''}" data-value="${letters[i]}">
+                <strong>${letters[i]}</strong> ${opt}
+              </button>`).join('')}
+          </div>
+        </div>
+      </div>`;
   }
 
-  // close result overlay
-  if (e.target && e.target.id === 'closeResult') {
-    const overlay = rightPanel.querySelector('#resultOverlay');
-    if (overlay) {
-      overlay.style.display = 'none';
-      overlay.setAttribute('aria-hidden', 'true');
-    }
+  if (q.type === 'fill') {
+    return `
+      <div class="q-card two-col" id="${q.id || ('q'+idx)}">
+        <div class="reading-pane">
+          <h4>Reading</h4>
+          <p>${q.reading || ''}</p>
+        </div>
+        <div>
+          <h4>${q.question || 'Điền từ vào chỗ trống'}</h4>
+          <input class="fill-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        </div>
+      </div>`;
   }
 
-  // retry / redo - reset savedState for exercises and re-render exercises to cleared state
-  if (e.target && e.target.id === 'retryResult') {
-    // clear state (do not store ex3)
-    window.savedState.exercises = { ex1: null, ex2: null, ex3: null, ex4: [] };
-    // hide overlay
-    const overlay = rightPanel.querySelector('#resultOverlay');
-    if (overlay) overlay.style.display = 'none';
-    // re-initialize exercises view (re-render current exercises content)
-    const exerciseBtn = document.querySelector('.side-btn[data-content="exercises"]');
-    if (exerciseBtn) exerciseBtn.click();
-  }
-});
-
-// Initialize drag & drop and other interactive bits
-function initExercises() {
-  // cập nhật header theo selection (nếu có) - không dùng testNum nữa
-  const titleEl = rightPanel.querySelector('.ex-title');
-  if (titleEl) {
-    const s = window.currentTest && window.currentTest.subject ? window.currentTest.subject : 'Bộ khung câu hỏi';
-    const n = window.currentTest && window.currentTest.number ? window.currentTest.number : 1;
-    titleEl.textContent = `${s} - Test ${n}`;
+  if (q.type === 'drag') {
+    return `
+      <div class="q-card" id="${q.id || ('q'+idx)}">
+        <h4>${q.question || ''}</h4>
+        <div class="drop-zone" id="drop-target"></div>
+        <div class="drag-pool" id="drag-pool">
+          ${(q.words || []).map((w,i)=>`<div class="draggable" draggable="true" data-id="w${i}">${w}</div>`).join('')}
+        </div>
+      </div>`;
   }
 
-  // restore saved state (MC selections, drag order) -- DO NOT restore ex3 input
-  if (window.savedState.exercises.ex1) {
-    const btn = rightPanel.querySelector(`#ex1 .mc-option[data-value="${window.savedState.exercises.ex1}"]`);
-    if (btn) btn.classList.add('selected');
-  }
-  if (window.savedState.exercises.ex2) {
-    const btn = rightPanel.querySelector(`#ex2 .mc-option[data-value="${window.savedState.exercises.ex2}"]`);
-    if (btn) btn.classList.add('selected');
-  }
+  return '';
+}
 
-  // ex3: do NOT restore previous input; ensure it's empty
-  const ex3inputEl = rightPanel.querySelector('#ex3 #ex3-input');
-  if (ex3inputEl) {
-    ex3inputEl.value = '';
-    // do not attach input listener that saves value
-  }
-
-  // drag init and restore order if saved; allow click to move between pool and drop
+function initInteractions() {
+  // DRAG & DROP
   const draggables = rightPanel.querySelectorAll('.draggable');
   draggables.forEach(d => {
-    d.addEventListener('dragstart', function(ev) {
-      ev.dataTransfer.setData('text/plain', d.dataset.id);
-    });
-
-    // click toggles between pool and drop
+    d.addEventListener('dragstart', function(ev) { ev.dataTransfer.setData('text/plain', d.dataset.id); });
     d.addEventListener('click', function() {
       const pool = rightPanel.querySelector('#drag-pool');
       const drop = rightPanel.querySelector('#drop-target');
       if (!pool || !drop) return;
-      // if currently inside drop, move back to pool; otherwise move to drop
-      if (drop.contains(d)) pool.appendChild(d);
-      else drop.appendChild(d);
-      updateSavedDragOrder();
+      if (drop.contains(d)) pool.appendChild(d); else drop.appendChild(d);
+      saveDragOrder();
     });
   });
-
   const drop = rightPanel.querySelector('#drop-target');
   if (drop) {
-    drop.addEventListener('dragover', function(ev) { ev.preventDefault(); });
-    drop.addEventListener('drop', function(ev) {
+    drop.addEventListener('dragover', ev => ev.preventDefault());
+    drop.addEventListener('drop', ev => {
       ev.preventDefault();
       const id = ev.dataTransfer.getData('text/plain');
       const el = rightPanel.querySelector(`.draggable[data-id="${id}"]`);
       if (el) drop.appendChild(el);
-      updateSavedDragOrder();
+      saveDragOrder();
     });
   }
-
   const pool = rightPanel.querySelector('#drag-pool');
   if (pool) {
-    pool.addEventListener('dragover', function(ev) { ev.preventDefault(); });
-    pool.addEventListener('drop', function(ev) {
+    pool.addEventListener('dragover', ev => ev.preventDefault());
+    pool.addEventListener('drop', ev => {
       ev.preventDefault();
       const id = ev.dataTransfer.getData('text/plain');
       const el = rightPanel.querySelector(`.draggable[data-id="${id}"]`);
       if (el) pool.appendChild(el);
-      updateSavedDragOrder();
+      saveDragOrder();
     });
   }
 
-  // restore drag order if exists
-  if (window.savedState.exercises.ex4 && window.savedState.exercises.ex4.length) {
-    const savedOrder = window.savedState.exercises.ex4.slice();
-    const poolEl = rightPanel.querySelector('#drag-pool');
-    const dropEl = rightPanel.querySelector('#drop-target');
-    // first move all to pool
-    const all = rightPanel.querySelectorAll('.draggable');
-    all.forEach(a => poolEl.appendChild(a));
-    // then append in saved order to drop
-    savedOrder.forEach(text => {
-      const el = Array.from(rightPanel.querySelectorAll('.draggable')).find(d => d.textContent.trim() === text);
-      if (el && dropEl) dropEl.appendChild(el);
-    });
-  }
-
-  // helper to update saved drag order
-  function updateSavedDragOrder() {
+  function saveDragOrder() {
     const dropNow = rightPanel.querySelector('#drop-target');
-    if (dropNow) {
-      window.savedState.exercises.ex4 = Array.from(dropNow.querySelectorAll('.draggable')).map(d => d.textContent.trim());
-    } else {
-      window.savedState.exercises.ex4 = [];
-    }
+    const arr = dropNow ? Array.from(dropNow.querySelectorAll('.draggable')).map(d => d.textContent.trim()) : [];
+    window.savedState.exercises['ex4'] = arr; // assuming id 'ex4' by our generator
   }
 }
 
-// Hiển thị mặc định nội dung đầu tiên
-if (btns[0]) {
-  btns[0].click();
+function computeAndShowScore() {
+  const data = window.currentData;
+  if (!data) return;
+  let score = 0;
+  let total = 0;
+
+  data.questions.forEach(q => {
+    if (q.type === 'mcq' || q.type === 'reading-mcq') {
+      total += 1;
+      const sel = window.savedState.exercises[q.id] || null;
+      if (sel && typeof q.answer === 'string' && sel === q.answer) score += 1;
+    } else if (q.type === 'fill') {
+      total += 1;
+      const inputEl = rightPanel.querySelector(`#${q.id} .fill-input`);
+      const val = (inputEl && inputEl.value) ? inputEl.value.trim().toLowerCase() : '';
+      if (Array.isArray(q.answer)) {
+        const ok = q.answer.map(a => String(a).trim().toLowerCase()).includes(val);
+        if (ok) score += 1;
+      } else if (typeof q.answer === 'string') {
+        if (val === q.answer.trim().toLowerCase()) score += 1;
+      }
+    } else if (q.type === 'drag') {
+      total += 1;
+      const drop = rightPanel.querySelector('#drop-target');
+      const order = drop ? Array.from(drop.querySelectorAll('.draggable')).map(d => d.textContent.trim()) : [];
+      if (Array.isArray(q.answer) && order.length === q.answer.length && order.every((v,i)=>v===q.answer[i])) {
+        score += 1;
+      }
+    }
+  });
+
+  const percent = Math.round((score/total)*100);
+  const overlay = rightPanel.querySelector('#resultOverlay');
+  if (overlay) {
+    overlay.style.display = 'flex';
+    rightPanel.querySelector('#resultScore').textContent = `Điểm: ${score}/${total} (${percent}%)`;
+    rightPanel.querySelector('#resultText').textContent = 'Kết quả đã được nộp.';
+    overlay.setAttribute('aria-hidden', 'false');
+  }
 }
+
+// Show About by default
+if (btns[0]) { btns[0].click(); }
