@@ -80,6 +80,7 @@ const contents = {
       </div>
     </div>
   `,
+  builder: `<div></div>`,
   projects: ``,
   contact: `<h2>Liên hệ</h2><p>Email: hoanglight2006@gmail.com<br>Facebook: fb.com/hoanglight2</p>`
 };
@@ -104,6 +105,9 @@ btns.forEach(btn => {
     } else if (key === 'exercises' && window.currentData) {
       // Re-render current loaded test
       renderExercises(window.currentData);
+    } else if (key === 'builder') {
+      // 👈 thêm xử lý cho menu Tạo đề
+      initBuilder();
     }
   });
 });

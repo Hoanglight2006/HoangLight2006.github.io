@@ -404,3 +404,47 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* make builder buttons look like Check button globally */
+.btn-check-like {
+  background: linear-gradient(135deg, #4682A9, #749BC2);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(72,130,169,0.12);
+  transition: transform 0.18s ease, background 0.2s;
+}
+.btn-check-like:hover {
+  transform: scale(1.03);
+  background: linear-gradient(135deg, #91C8E4, #4682A9);
+}
+
+/* ensure fill-input inside q-card is full width and doesn't overflow */
+.q-card .fill-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
+}
+
+/* spacing between q-cards so they don't overlap */
+#builderArea .q-card {
+  margin-bottom: 14px;
+}
+
+/* ensure two-col in builder has balanced columns */
+#builderArea .two-col {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* make delete button consistent on small screens */
+#builderArea .del-q {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
