@@ -73,13 +73,16 @@ const contents = {
     </div>
   `,
   // Placeholder content for 'exercises' if user clicks menu directly
-  exercises: `
-    <div class="exercise-container">
-      <div class="ex-header">
-        <h3 class="ex-title">Chọn Test từ Trang chủ đã nhé 👀</h3>
-      </div>
+exercises: `
+  <div class="exercise-container">
+    <div class="ex-header"><h3 class="ex-title">Bài tập</h3></div>
+    <div class="ex-body">
+      <p>Chọn Test từ Trang chủ hoặc upload file JSON tự tạo.</p>
+      <input type="file" id="customJsonInput" accept=".json" />
     </div>
-  `,
+  </div>
+`,
+
   builder: `<div></div>`,
   projects: ``,
   contact: `<h2>Liên hệ</h2><p>Email: hoanglight2006@gmail.com<br>Facebook: fb.com/hoanglight2</p>`
@@ -100,13 +103,34 @@ btns.forEach(btn => {
     btn.classList.add('active');
     const key = btn.getAttribute('data-content');
     rightPanel.innerHTML = contents[key] || '';
+
     if (key === 'exercises' && !window.currentData) {
-      // If no currentData yet, show placeholder (already set)
+      // 👉 nếu chưa có đề nào thì gắn listener cho input upload
+      const input = document.getElementById('customJsonInput');
+      if (input) {
+        input.addEventListener('change', e => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = ev => {
+            try {
+              const json = JSON.parse(ev.target.result);
+              window.currentData = json;       // lưu thành đề hiện tại
+              renderExercises(window.currentData);
+            } catch (err) {
+              alert("File JSON không hợp lệ!");
+            }
+          };
+          reader.readAsText(file);
+        });
+      }
+
     } else if (key === 'exercises' && window.currentData) {
-      // Re-render current loaded test
+      // Nếu đã có currentData thì render lại
       renderExercises(window.currentData);
+
     } else if (key === 'builder') {
-      // 👈 thêm xử lý cho menu Tạo đề
+      // Xử lý tab Tạo đề
       initBuilder();
     }
   });
